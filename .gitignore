@@ -1,0 +1,51 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/project-management-client/dist
+/project-management-client/tmp
+/project-management-client/out-tsc
+# Only exists if Bazel was run
+/project-management-client/bazel-out
+
+# dependencies
+/project-management-client/node_modules
+/project-management-server/node_modules
+
+# package lock
+
+/project-management-client/package-lock.json
+/project-management-server/package-lock.json
+
+# profiling files
+chrome-profiler-events*.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/project-management-client/.sass-cache
+/project-management-client/connect.lock
+/project-management-client/coverage
+/project-management-client/libpeerconnection.log
+project-management-client/npm-debug.log
+project-management-client/yarn-error.log
+testem.log
+/project-management-client/typings
+
+# System Files
+.DS_Store
+Thumbs.db
