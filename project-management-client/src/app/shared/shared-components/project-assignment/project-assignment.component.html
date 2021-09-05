@@ -1,0 +1,34 @@
+<div class="flex justify-between items-center">
+    <h2>Create Project</h2>
+    <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div class="pt-4" [formGroup]="projectAssignmentForm">
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Number</mat-label>
+            <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="selectedProject"
+                [matAutocomplete]="auto">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="projectAssignmentForm?.get('selectedProject')?.hasError('required')">This field is
+                required</mat-error>
+        </mat-form-field>
+
+
+        <mat-form-field class="flex-1 pl-6" appearance="outline">
+            <mat-label>Assign User</mat-label>
+            <input matInput placeholder="Project Code" formControlName="assignedUsers">
+
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="flex justify-end">
+    <button mat-raised-button color="primary" (click)="assignProject()">Assign Projects</button>
+</div>

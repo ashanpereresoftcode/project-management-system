@@ -1,0 +1,16 @@
+<div class="flex justify-between">
+    <div class="-ml-3.5">
+        <button mat-icon-button [color]="color" *ngFor="let ratingId of ratingArr;index as i" [id]="'star_'+i"
+            (click)="onClick(i+1)" matTooltipPosition="above">
+            <mat-icon>
+                {{showIcon(i)}}
+            </mat-icon>
+        </button>
+        <mat-error *ngIf="starCount == null || starCount == 0">
+            Star count is <strong>required</strong> and cannot be zero
+        </mat-error>
+    </div>
+    <p>
+        Your rated <span class="body-2">{{rating}}</span> / <span class="body-2">{{starCount}}</span>
+    </p>
+</div>

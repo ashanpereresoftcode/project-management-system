@@ -1,0 +1,33 @@
+<div class="flex justify-between items-center">
+    <h2>Skill Assignment</h2>
+    <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div class="pt-4" [formGroup]="skillAssignmentForm">
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Search Skills</mat-label>
+            <input type="text" placeholder="Pick one" aria-label="Search Skills" matInput formControlName="selectedSkills"
+                [matAutocomplete]="auto">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="skillAssignmentForm?.get('selectedSkills')?.hasError('required')">This field is
+                required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="flex-1 pl-6" appearance="outline">
+            <mat-label>Assign User</mat-label>
+            <input matInput placeholder="Project Code" formControlName="assignedUser">
+        </mat-form-field>
+    </div>
+    <ratings [rating]="currentRating" (ratingUpdated)="updatedRating($event)"></ratings>
+</div>
+
+<div class="flex justify-end">
+    <button mat-raised-button color="primary" (click)="assignProject()">Assign Skills</button>
+</div>

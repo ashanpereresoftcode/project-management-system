@@ -1,0 +1,40 @@
+@import "./responsive";
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+.tox-statusbar {
+    display: none !important;
+}
+
+.tox-notifications-container {
+    display: none !important;
+}
+
+editor {
+    .tox {
+        // height: 40rem !important;
+        height: 35rem !important;
+        width: 100% !important;
+
+        @include respond(laptop) {
+            height: 30rem !important;
+        }
+
+        @include respond(phone) {
+            height: 20rem !important;
+        }
+    }
+}
+
+.user-menu {
+    width: 22rem !important;
+}
+
+.mat-list-item-content {
+    flex: 1 1 100% !important;
+}

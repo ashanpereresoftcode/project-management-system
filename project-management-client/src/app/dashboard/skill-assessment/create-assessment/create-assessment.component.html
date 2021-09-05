@@ -1,0 +1,31 @@
+<div class="flex justify-between items-center">
+    <h2>Create Skill</h2>
+    <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div class="pt-4" [formGroup]="skillFormGroup">
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Skill Name</mat-label>
+            <input matInput placeholder="Skill Name" formControlName="skillName">
+            <mat-error *ngIf="skillFormGroup?.get('skillName')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+        <mat-form-field class="flex-1 pl-6" appearance="outline">
+            <mat-label>Skill Code</mat-label>
+            <input matInput placeholder="Skill Code" formControlName="skillCode">
+            <mat-error *ngIf="skillFormGroup?.get('skillCode')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea matInput placeholder="Description" formControlName="description"></textarea>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="flex justify-end">
+    <button mat-raised-button color="primary" (click)="saveSkillAssessment()">{{ skill ? 'Update' : 'Save' }}</button>
+</div>

@@ -1,0 +1,14 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '~ngx-toastr/toastr';
+
+
+@import "../../node_modules/ag-grid-community/dist/styles/ag-grid.css";
+@import "../../node_modules/ag-grid-community/dist/styles/ag-theme-material.css";
+@import "./base";
+@import "./font-overrides";
+@import "./overrides";
+@import "./responsive";
+@import "./variables";
+@import './themes';

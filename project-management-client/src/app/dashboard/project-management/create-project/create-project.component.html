@@ -1,0 +1,41 @@
+<div class="flex justify-between items-center">
+    <h2>Create Project</h2>
+    <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div class="pt-4" [formGroup]="projectForm">
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Project Name</mat-label>
+            <input matInput placeholder="Project Name" formControlName="projectName">
+            <mat-error *ngIf="projectForm?.get('projectName')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+        <mat-form-field class="flex-1 pl-6" appearance="outline">
+            <mat-label>Project Code</mat-label>
+            <input matInput placeholder="Project Code" formControlName="projectCode">
+            <mat-error *ngIf="projectForm?.get('projectCode')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Project Description</mat-label>
+            <input matInput placeholder="Project Description" formControlName="projectDescription">
+        </mat-form-field>
+        <mat-form-field class="flex-1 pl-6" appearance="outline">
+            <mat-label>Project Status</mat-label>
+            <mat-select placeholder="Project Status" formControlName="projectStatus">
+                <mat-option *ngFor="let status of projectStatus" [value]="status.value">
+                    {{status.viewValue}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="projectForm?.get('projectStatus')?.hasError('required')">This field is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="flex justify-end">
+    <button mat-raised-button color="primary" (click)="saveProject()">{{ project ? 'Update' : 'Save' }}</button>
+</div>
