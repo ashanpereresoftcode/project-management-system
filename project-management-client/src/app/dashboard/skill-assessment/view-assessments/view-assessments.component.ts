@@ -47,7 +47,7 @@ export class ViewAssessmentsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Actions',
-        width: 55,
+        width: 100,
         cellRendererFramework: SkillCellRendererComponent
       }
     ];

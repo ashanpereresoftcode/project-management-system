@@ -1,13 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { UserModel, changePasswordModel, loginUserModel } from '../models';
 import { Observable } from 'rxjs';
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  onUserAfterSave: EventEmitter<any> = new EventEmitter<any>();
+  onUserAfterDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
+  
+  onRoleAfterSave: EventEmitter<any> = new EventEmitter<any>();
+  onRoleAfterDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  onPermissionAfterSave: EventEmitter<any> = new EventEmitter<any>();
+  onPermissionAfterDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   baseUrl: string = environment.baseUrl;
 
@@ -32,7 +40,7 @@ export class AuthService {
     const url: string = `${this.baseUrl}/api/v1/user/user-manager/change-password`;
     return this.http.post(url, userData)
   }
-  
+
   fetchRoleList(): Observable<any> {
     const url: string = `${this.baseUrl}/api/v1/role/get-all`;
     return this.http.get(url);

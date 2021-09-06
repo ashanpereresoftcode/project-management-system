@@ -56,13 +56,13 @@ export class NavigationService {
         {
           displayName: 'View Roles',
           iconName: 'subdirectory_arrow_rightz',
-          route: '/dashboard/user-management/permission-module/view-permissions',
+          route: '/dashboard/user-management/role-module/view-roles',
           children: []
         },
         {
           displayName: 'View Permissions',
           iconName: 'subdirectory_arrow_rightz',
-          route: '/dashboard/user-management/role-module/view-roles',
+          route: '/dashboard/user-management/permission-module/view-permissions',
           children: []
         }
       ]

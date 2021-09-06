@@ -1,1 +1,35 @@
-<p>create-permission works!</p>
+<div class="flex justify-between items-center">
+    <h2>{{ permission ? 'Update' : 'Create'}} Role</h2>
+    <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<!-- <perfect-scrollbar>
+</perfect-scrollbar> -->
+<div class="overflow-auto pt-4" [formGroup]="permissionForm">
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Permission Name</mat-label>
+            <input matInput placeholder="Permission Name" formControlName="permissionName">
+            <mat-error *ngIf="permissionForm?.get('permissionName')?.hasError('required')">This field is required
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="flex-1 pl-6" appearance="outline">
+            <mat-label>Permission Code</mat-label>
+            <input matInput placeholder="Permission Code" formControlName="permissionCode">
+            <mat-error *ngIf="permissionForm?.get('permissionCode')?.hasError('required')">This field is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Permission Description</mat-label>
+            <textarea matInput placeholder="Permission Description" formControlName="permissionDescription"></textarea>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="flex justify-end">
+    <button mat-raised-button color="primary" (click)="saveUser()">{{ permission ? 'Update' : 'Save' }}</button>
+</div>

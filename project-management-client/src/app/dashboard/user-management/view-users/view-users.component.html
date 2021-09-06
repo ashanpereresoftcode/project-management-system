@@ -1,1 +1,28 @@
-<p>view-users works!</p>
+<div class="flex">
+    <div class="flex justify-between w-full">
+        <span class="text-3xl uppercase">User Management</span>
+        <div class="button-content">
+            <button mat-raised-button>
+                <mat-icon class="mr-1">content_paste</mat-icon>
+                <span class="text-xl">Export To Excel</span>
+            </button>
+            <button class="ml-1" mat-raised-button>
+                <mat-icon class="mr-1">picture_as_pdf</mat-icon>
+                <span class="text-xl">Export To Pdf</span>
+            </button>
+            <button class="ml-1" mat-raised-button (click)="openModal()">
+                <mat-icon class="mr-1">add</mat-icon>
+                <span class="text-xl">Add User</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="outer-div pt-8">
+    <div class="grid-wrapper w-full">
+        <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-material"
+            [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowData]="rowData"
+            (gridReady)="onGridReady($event)">
+        </ag-grid-angular>
+    </div>
+</div>

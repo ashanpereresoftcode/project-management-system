@@ -1,0 +1,17 @@
+:host{
+    overflow: auto !important;
+}
+
+.outer-div {
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.button-bar {
+    margin-bottom: 1rem;
+}
+
+.grid-wrapper {
+    flex: 1 1 auto;
+}

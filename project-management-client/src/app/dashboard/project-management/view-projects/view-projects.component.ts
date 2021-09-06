@@ -52,7 +52,7 @@ export class ViewProjectsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Actions',
-        width: 55,
+        width: 100,
         cellRendererFramework: ProjectActionCellRedererComponent
       }
     ];

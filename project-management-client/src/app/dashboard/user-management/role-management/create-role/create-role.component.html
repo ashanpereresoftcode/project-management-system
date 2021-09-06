@@ -1,1 +1,33 @@
-<p>create-roles works!</p>
+<div class="flex justify-between items-center">
+    <h2>Create Role</h2>
+    <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<!-- <perfect-scrollbar>
+</perfect-scrollbar> -->
+<div class="overflow-auto pt-4" [formGroup]="roleForm">
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Role Name</mat-label>
+            <input matInput placeholder="Role Name" formControlName="roleName">
+            <mat-error *ngIf="roleForm?.get('roleName')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+        <mat-form-field class="flex-1 pl-6" appearance="outline">
+            <mat-label>Role Code</mat-label>
+            <input matInput placeholder="Role Code" formControlName="roleCode">
+            <mat-error *ngIf="roleForm?.get('roleCode')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline">
+            <mat-label>Role Description</mat-label>
+            <textarea matInput placeholder="Role Description" formControlName="roleDescription"></textarea>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="flex justify-end">
+    <button mat-raised-button color="primary" (click)="saveUser()">{{ role ? 'Update' : 'Save' }}</button>
+</div>
