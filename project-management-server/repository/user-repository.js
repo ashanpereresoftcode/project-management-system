@@ -24,7 +24,7 @@ exports.saveUser = async (user) => {
   const session = await mongoose.startSession();
   try {
     await session.withTransaction(async () => {
-      if (user.roles && user.roles.length === 0) { 
+      if (user.roles && user.roles.length === 0) {
         const defaultRole = await roleRepository.filterRole({ roleCode: 'NORMAL_USER' }, true);
         if (defaultRole && defaultRole.length > 0) {
           user.roles = [];
@@ -54,6 +54,16 @@ exports.saveUser = async (user) => {
 exports.getUserDetails = async () => {
   return await userModel
     .find({ isActive: true })
+    .populate({
+      path: "assignedSkills",
+      model: "AssignedSkill",
+      match: { isActive: true },
+      populate: {
+        path: "skill",
+        match: { isActive: true },
+        model: "Skill",
+      },
+    })
     .sort({ createdOn: 'descending' })
     .select("-password -passwordSalt");
 };
@@ -88,6 +98,16 @@ exports.getUserDetail = async (userId) => {
         match: { isActive: true },
         select: "-_id -__v -permissionId",
         model: "Permission",
+      },
+    })
+    .populate({
+      path: "assignedSkills",
+      model: "AssignedSkill",
+      match: { isActive: true },
+      populate: {
+        path: "skill",
+        match: { isActive: true },
+        model: "Skill",
       },
     })
     .select("-password -passwordSalt -__v");
@@ -126,6 +146,9 @@ exports.updateUser = async (user) => {
     currentUser.createdBy = user.createdBy;
     currentUser.createdOn = user.createdOn;
     currentUser.modifiedBy = details.user;
+    currentUser.designation = user.designation;
+    currentUser.assignedSkills = user.assignedSkills;
+    currentUser.projects = user.projects;
     currentUser.modifiedOn = new Date();
     currentUser.isActive = user.isActive;
     currentUser.clientTenentId = details.clientId;

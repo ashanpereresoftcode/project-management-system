@@ -12,6 +12,9 @@ const errorHanlder = require('./helpers/error-handler-middleware');
 const roleRoutes = require('./routes/role-route');
 const permissionRoutes = require('./routes/permission-route');
 const userRoutes = require('./routes/user-route');
+const projectRoute = require('./routes/project-route');
+const skillRoute = require('./routes/skill-route');
+const skillAssignmentRoute = require('./routes/skill-assignment-route');
 
 const app = express()
 require('dotenv').config({ path: `./env-${process.env.NODE_ENV}.env` })
@@ -29,5 +32,8 @@ const environmentConfigs = process.env;
 app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.permissionContrllerRoute}`, permissionRoutes);
 app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.roleControllerRoute}`, roleRoutes);
 app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.userControllerRoute}`, userRoutes);
+app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.projectControllerRoute}`, projectRoute);
+app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.skillControllerRoute}`, skillRoute);
+app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.skillAssignmentControllerRoute}`, skillAssignmentRoute);
 
 module.exports = app;

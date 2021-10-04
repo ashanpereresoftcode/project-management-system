@@ -104,6 +104,9 @@ exports.saveUser = async (req, res) => {
           firstName: payload.firstName,
           lastName: payload.lastName,
           middleName: payload.middleName,
+          designation: payload.designation,
+          projects: payload.projects,
+          assignedSkills: payload.assignedSkills,
           userEmail: payload.userEmail,
           password: payload.password,
           contact: payload.contact,
@@ -219,6 +222,9 @@ exports.updateUser = async (req, res) => {
           password: payload.password,
           contact: payload.contact,
           userAddress: payload.userAddress,
+          designation: payload.designation,
+          assignedSkills: payload.assignedSkills,
+          projects: payload.projects,
           nic: payload.nic,
           passportId: payload.passportId,
           roles: payload.roles,
@@ -302,6 +308,7 @@ exports.deleteUsers = async (req, res) => {
       return;
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.stack, success: false });
   }
 };
