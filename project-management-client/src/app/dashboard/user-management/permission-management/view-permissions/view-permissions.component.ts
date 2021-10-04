@@ -69,56 +69,30 @@ export class ViewPermissionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.rowData =
-      [
-        {
-          permissionName: "AshanPerera@@1",
-          permissionCode: "Ashan",
-          permissionDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-        {
-          permissionName: "AshanPerera@@1",
-          permissionCode: "Ashan",
-          permissionDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-        {
-          permissionName: "AshanPerera@@1",
-          permissionCode: "Ashan",
-          permissionDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-        {
-          permissionName: "AshanPerera@@1",
-          permissionCode: "Ashan",
-          permissionDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-        {
-          permissionName: "AshanPerera@@1",
-          permissionCode: "Ashan",
-          permissionDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-      ]
-
+    this.loadAllPermissions();
     this.permissionCreateListener();
     this.permissionDeleteListener();
   }
 
+  loadAllPermissions = () => {
+    this.permissionSubscriptions.push(this.authService.fetchUserPermission().subscribe((serviceResult: any) => {
+      if (serviceResult && serviceResult.result) {
+        this.rowData = serviceResult.result;
+      }
+    }, error => {
+      console.log(error);
+    }))
+  }
+
   permissionCreateListener = () => {
-    this.permissionSubscriptions.push(this.authService.onPermissionAfterDelete.subscribe((result: any) => {
+    this.permissionSubscriptions.push(this.authService.onPermissionAfterSave.subscribe((result: any) => {
       if (result) {
         if (result && result.isEditMode) {
-          // map function.
+          const index = this.rowData.findIndex(x => x._id === result.permission._id);
+          this.rowData[index] = result.user;
+          this.gridApi.setRowData(this.rowData);
         } else {
-          this.rowData.push(result);
+          this.rowData.unshift(result);
           this.gridApi.setRowData(this.rowData);
         }
       }
@@ -127,9 +101,11 @@ export class ViewPermissionsComponent implements OnInit, OnDestroy {
 
   permissionDeleteListener = () => {
     this.permissionSubscriptions.push(this.authService.onPermissionAfterDelete.subscribe((result: any) => {
-      debugger
       if (result) {
-        // remove data from the array.
+        const id = result.permissionIds[0];
+        const index = this.rowData.findIndex(x => x._id === id);
+        this.rowData.splice(index, 1);
+        this.gridApi.setRowData(this.rowData);
       }
     }))
   }

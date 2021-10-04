@@ -1,4 +1,5 @@
 import { Component, OnInit, Inject, EventEmitter, Output, Input } from '@angular/core';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -12,12 +13,14 @@ import { ProjectManagementService } from '../../../shared/services';
 export class CreateProjectComponent implements OnInit {
 
   @Input() project!: any;
+
+  @BlockUI() blockUI!: NgBlockUI;
   projectForm!: FormGroup;
 
+
   projectStatus: any[] = [
-    { value: 'todo', viewValue: 'Todo' },
-    { value: 'in-progress', viewValue: 'In-progress' },
-    { value: 'done', viewValue: 'Done' }
+    { value: 'active', viewValue: 'Active' },
+    { value: 'in-active', viewValue: 'In-active' },
   ];
 
   constructor(
@@ -61,27 +64,42 @@ export class CreateProjectComponent implements OnInit {
 
     if (this.projectForm.valid) {
       const project = this.projectForm.value;
-
       if (this.project) {
         this.project.projectName = project.projectName;
         this.project.projectCode = project.projectCode;
         this.project.projectDescription = project.projectDescription;
         this.project.projectStatus = project.projectStatus;
-        // add the service call from here
-        const editProjectRef = { isEditMode: true, project: this.project };
-        this.toastrService.success('Successfully updated.', 'Success');
-        this.projectManagementService.afterSave.emit(editProjectRef);
-        this.closeModal();
+
+        this.blockUI.start();
+        this.projectManagementService.updateProject(this.project).subscribe(serviceResult => {
+          if (serviceResult) {
+            const editProjectRef = { isEditMode: true, project: this.project };
+            this.toastrService.success('Successfully updated.', 'Success');
+            this.projectManagementService.afterSave.emit(editProjectRef);
+            this.closeModal();
+          }
+          this.blockUI.stop();
+        }, error => {
+          console.log(error);
+          this.blockUI.stop();
+        })
+
       } else {
-        // add the service call from here
-        this.toastrService.success('Successfully saved.', 'Success');
-        this.projectManagementService.afterSave.emit(project);
-        this.closeModal();
+        this.blockUI.start();
+        this.projectManagementService.createProject(project).subscribe(createdResult => {
+          if (createdResult) {
+            this.toastrService.success('Successfully saved.', 'Success');
+            this.projectManagementService.afterSave.emit(project);
+            this.closeModal();
+          }
+          this.blockUI.stop();
+        }, error => {
+          console.log(error);
+          this.blockUI.stop();
+        });
       }
     } else {
       this.toastrService.error('Please check the form again.', 'Error');
     }
-
   }
-
 }

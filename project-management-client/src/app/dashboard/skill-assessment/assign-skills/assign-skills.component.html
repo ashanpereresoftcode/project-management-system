@@ -1,0 +1,29 @@
+<div class="flex">
+    <div class="flex justify-between w-full">
+        <span class="text-3xl uppercase">Skill Assessment</span>
+
+    </div>
+</div>
+
+<form autocomplete="off" [formGroup]="skillAssignFormGroup" class="flex justify-between mt-2">
+    <div class="flex w-1/5">
+        <ng-select class="w-4/5" name="resource" id="resource" placeholder="Search Resource" formControlName="resource"
+            (change)="onResourceSelection()">
+            <ng-option *ngFor="let user of users" [value]="user">{{user.firstName}}</ng-option>
+        </ng-select>
+    </div>
+    <div class="flex">
+        <button class="h-16" mat-raised-button (click)="openSkillAssignment()">
+            <mat-icon>assignment_turned_in</mat-icon>
+            <span class="text-xl">Assign Skill</span>
+        </button>
+    </div>
+</form>
+<div class="outer-div pt-8">
+    <div class="grid-wrapper w-full">
+        <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-material"
+            [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowData]="rowData"
+            (gridReady)="onGridReady($event)">
+        </ag-grid-angular>
+    </div>
+</div>

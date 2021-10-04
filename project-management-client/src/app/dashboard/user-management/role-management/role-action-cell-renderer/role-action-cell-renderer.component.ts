@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICellRendererParams } from "ag-grid-community";
 import { MatDialog } from '@angular/material/dialog';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { CreateRoleComponent } from '../../role-management/create-role/create-role.component';
 import { AuthService } from '../../../../shared/services';
 
@@ -9,10 +12,13 @@ import { AuthService } from '../../../../shared/services';
   templateUrl: './role-action-cell-renderer.component.html',
   styleUrls: ['./role-action-cell-renderer.component.scss']
 })
-export class RoleActionCellRendererComponent implements OnInit {
+export class RoleActionCellRendererComponent implements OnInit, OnDestroy {
   data: any;
+  @BlockUI() blockUI!: NgBlockUI;
 
-  constructor(public dialog: MatDialog, private authService: AuthService) {
+  projectSubscriptions: Subscription[] = [];
+
+  constructor(public dialog: MatDialog, private authService: AuthService, private toastrService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -40,7 +46,39 @@ export class RoleActionCellRendererComponent implements OnInit {
     });
   }
 
-  deleteProject = () => {
-    this.authService.onRoleAfterDelete.emit(true);
+  deleteRole = () => {
+    this.blockUI.start('Deleting....');
+    const appIds: string[] = [].concat(this.data._id);
+    if (appIds && appIds.length > 0) {
+      this.proceedDelete(appIds);
+    } else {
+      this.toastrService.error("Please select items to delete.", "Error");
+      this.blockUI.stop();
+    }
+  }
+
+  proceedDelete = (appIds: string[]) => {
+    let form = new FormData();
+    form.append("roleIds", JSON.stringify(appIds));
+
+    this.projectSubscriptions.push(this.authService.deleteRoles(form).subscribe((deletedResult: any) => {
+      if (deletedResult) {
+        const emittingVal: any = { deleted: true, roleIds: appIds };
+        this.authService.onRoleAfterDelete.emit(emittingVal);
+        this.toastrService.success('Successfully deleted.', 'Success');
+      }
+      this.blockUI.stop();
+    }, () => {
+      this.toastrService.error('Failed to delete', 'Error');
+      this.blockUI.stop();
+    }));
+  }
+
+  ngOnDestroy(): void {
+    if (this.projectSubscriptions && this.projectSubscriptions.length > 0) {
+      this.projectSubscriptions.forEach(e => {
+        e.unsubscribe();
+      })
+    }
   }
 }

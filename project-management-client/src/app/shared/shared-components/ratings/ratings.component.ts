@@ -7,9 +7,10 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } fro
 })
 export class RatingsComponent implements OnInit {
 
-  @Input('rating') rating: number = 3;
-  @Input('starCount') starCount: number = 5;
-  @Input('color') color: string = 'accent';
+  @Input() rating: number = 3;
+  @Input() starCount: number = 5;
+  @Input() showRatedLabel: boolean = false;
+  @Input() color: string = 'accent';
   @Output() ratingUpdated = new EventEmitter();
 
   ratingArr: number[] = [];

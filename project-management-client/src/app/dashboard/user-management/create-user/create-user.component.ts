@@ -1,7 +1,8 @@
-import { Component, OnInit, Inject, EventEmitter, Output, Input } from '@angular/core';
+import { Component, OnInit, Inject, EventEmitter, Output, Input, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../../shared/services';
 
 @Component({
@@ -9,13 +10,15 @@ import { AuthService } from '../../../shared/services';
   templateUrl: './create-user.component.html',
   styleUrls: ['./create-user.component.scss']
 })
-export class CreateUserComponent implements OnInit {
+export class CreateUserComponent implements OnInit, OnDestroy {
   @Input() user!: any;
   userForm!: FormGroup;
 
+  userSubscriptions: Subscription[] = [];
+
   projectStatus: any[] = [
-    { value: 'todo', viewValue: 'Todo' },
-    { value: 'in-progress', viewValue: 'In-progress' },
+    { value: 'active', viewValue: 'active' },
+    { value: 'in-active', viewValue: 'in-active' },
     { value: 'done', viewValue: 'Done' }
   ];
 
@@ -48,7 +51,9 @@ export class CreateUserComponent implements OnInit {
       nic: new FormControl(null),
       passportId: new FormControl(null),
       roles: new FormControl(null),
-      profilePic: new FormControl(null)
+      profilePic: new FormControl(null),
+      designation: new FormControl(null),
+      skills: new FormControl(null),
     })
   }
 
@@ -67,9 +72,8 @@ export class CreateUserComponent implements OnInit {
       control?.updateValueAndValidity({ onlySelf: true });
     });
 
-
     if (this.userForm.valid) {
-      const user = this.userForm.value;
+      const user = this.userForm.getRawValue();
 
       if (this.user) {
         this.user.userName = user.userName;
@@ -84,18 +88,37 @@ export class CreateUserComponent implements OnInit {
         this.user.roles = user.roles;
         this.user.profilePic = user.profilePic;
         // add the service call from here
-        const referrence = { isEditMode: true, user: this.user };
-        this.toastrService.success('Successfully updated.', 'Success');
-        this.authService.onUserAfterSave.emit(referrence);
-        this.closeModal();
+        this.userSubscriptions.push(this.authService.updateUser(this.user).subscribe(serviceResult => {
+          if (serviceResult) {
+            const referrence = { isEditMode: true, user: this.user };
+            this.toastrService.success('Successfully updated.', 'Success');
+            this.authService.onUserAfterSave.emit(referrence);
+            this.closeModal();
+          }
+        }, error => {
+          console.log(error);
+        }));
       } else {
-        // add the service call from here
-        this.toastrService.success('Successfully saved.', 'Success');
-        this.authService.onUserAfterSave.emit(user);
-        this.closeModal();
+        this.userSubscriptions.push(this.authService.saveUser(user).subscribe(serviceResult => {
+          if (serviceResult) {
+            this.toastrService.success('Successfully saved.', 'Success');
+            this.authService.onUserAfterSave.emit(user);
+            this.closeModal();
+          }
+        }, error => {
+          console.log(error);
+        }))
       }
     } else {
       this.toastrService.error('Please check the form again.', 'Error');
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.userSubscriptions && this.userSubscriptions.length > 0) {
+      this.userSubscriptions.forEach(e => {
+        e.unsubscribe();
+      })
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ColDef, GridApi, GridOptions } from "ag-grid-community";
 import { MatDialog } from '@angular/material/dialog';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { CreateProjectComponent } from '../create-project/create-project.component';
 import { ProjectActionCellRedererComponent } from '../project-action-cell-rederer/project-action-cell-rederer.component';
 import { ProjectManagementService } from '../../../shared/services';
@@ -12,6 +13,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./view-projects.component.scss']
 })
 export class ViewProjectsComponent implements OnInit, OnDestroy {
+
+  @BlockUI() blockUI!: NgBlockUI;
 
   gridApi!: GridApi;
   gridColumnApi: any;
@@ -28,25 +31,25 @@ export class ViewProjectsComponent implements OnInit, OnDestroy {
     this.columnDefs = [
       {
         field: 'projectName',
-        headerName: 'Project Name',
+        headerName: 'Resource Name',
         suppressAutoSize: true,
         width: 150
       },
       {
         field: 'projectCode',
-        headerName: 'Project Code',
+        headerName: 'Resource Code',
         suppressAutoSize: true,
         width: 150
       },
       {
         field: 'projectDescription',
-        headerName: 'Project Description',
+        headerName: 'Resource Description',
         width: 120,
         suppressAutoSize: true,
       },
       {
         field: 'projectStatus',
-        headerName: 'Project Status',
+        headerName: 'Resource Status',
         suppressAutoSize: true,
         width: 100
       },
@@ -60,27 +63,36 @@ export class ViewProjectsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.rowData =
-      [
-        {
-          projectName: "Sample Project",
-          projectCode: "SAMPLE PROJECT",
-          projectDescription: "SAMPLE PROJECT",
-          projectStatus: "in-progress",
-        }
-      ]
-
+    this.projectDataLoad();
     this.projectCreateListener();
     this.projectDeleteListener();
+  }
+
+  projectDataLoad = () => {
+    this.blockUI.start('Fetching ......');
+    this.projectSubscriptions.push(this.projectManagementService.getAllProjects().subscribe(projectData => {
+      if (projectData && projectData.validity) {
+        this.rowData = projectData.result;
+      }
+      const t = setTimeout(() => {
+        this.blockUI.stop();
+        clearTimeout(t)
+      }, 200);
+    }, error => {
+      console.log(error);
+      this.blockUI.stop();
+    }));
   }
 
   projectCreateListener = () => {
     this.projectSubscriptions.push(this.projectManagementService.afterSave.subscribe(result => {
       if (result) {
         if (result && result.isEditMode) {
-          // map function.
+          const index = this.rowData.findIndex(x => x._id === result.project._id);
+          this.rowData[index] = result.project;
+          this.gridApi.setRowData(this.rowData);
         } else {
-          this.rowData.push(result);
+          this.rowData.unshift(result);
           this.gridApi.setRowData(this.rowData);
         }
       }
@@ -89,9 +101,11 @@ export class ViewProjectsComponent implements OnInit, OnDestroy {
 
   projectDeleteListener = () => {
     this.projectSubscriptions.push(this.projectManagementService.afterDelete.subscribe(result => {
-      debugger
-      if (result) {
-        // remove data from the array.
+      if (result && result.deleted) {
+        const id = result.projectIds[0];
+        const index = this.rowData.findIndex(x => x._id === id);
+        this.rowData.splice(index, 1);
+        this.gridApi.setRowData(this.rowData);
       }
     }))
   }
@@ -99,7 +113,7 @@ export class ViewProjectsComponent implements OnInit, OnDestroy {
   sizeToFit = () => {
     this.gridApi.sizeColumnsToFit();
   }
-  
+
   onGridReady = (params: any) => {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;

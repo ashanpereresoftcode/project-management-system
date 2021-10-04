@@ -27,7 +27,7 @@ export class AuthInterceptorService {
         request = request.clone({
           headers: request.headers
             .set('Authorization', `Bearer ${token}`)
-            //TODO : NEEDS TO GET THESE FROM LOG USER SERVICE.
+            //active : NEEDS TO GET THESE FROM LOG USER SERVICE.
             .set('x-user', `softcode-it`)
             .set('x-client', `softcode-it`)
             .set('x-country', `softcode-it`)
@@ -36,7 +36,7 @@ export class AuthInterceptorService {
     } else {
       request = request.clone({
         headers: request.headers
-          //TODO : NEEDS TO GET THESE FROM LOG USER SERVICE.
+          //active : NEEDS TO GET THESE FROM LOG USER SERVICE.
           .set('x-client', `softcode-it`)
           .set('x-country', `softcode-it`),
       });

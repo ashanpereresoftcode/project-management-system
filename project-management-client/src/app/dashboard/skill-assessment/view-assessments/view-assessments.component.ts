@@ -55,26 +55,30 @@ export class ViewAssessmentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.rowData =
-      [
-        {
-          skillName: "C#",
-          skillCode: "C#",
-          description: "Dotnet"
-        }
-      ]
-
+    this.loadSkillData();
     this.skillCreateListener();
     this.skillDeleteListener();
+  }
+
+  loadSkillData = () => {
+    this.skillAssessmentService.getAllSkills().subscribe(serviceResult => {
+      if (serviceResult && serviceResult.validity) {
+        this.rowData = serviceResult.result;
+      }
+    }, error => {
+      console.log(error);
+    });
   }
 
   skillCreateListener = () => {
     this.skillSubscriptions.push(this.skillAssessmentService.afterSave.subscribe(result => {
       if (result) {
         if (result && result.isEditMode) {
-          // map function.
+          const index = this.rowData.findIndex(x => x._id === result.skill._id);
+          this.rowData[index] = result.skill;
+          this.gridApi.setRowData(this.rowData);
         } else {
-          this.rowData.push(result);
+          this.rowData.unshift(result);
           this.gridApi.setRowData(this.rowData);
         }
       }
@@ -83,9 +87,11 @@ export class ViewAssessmentsComponent implements OnInit, OnDestroy {
 
   skillDeleteListener = () => {
     this.skillSubscriptions.push(this.skillAssessmentService.afterDelete.subscribe(result => {
-      debugger
       if (result) {
-        // remove data from the array.
+        const id = result.skillIds[0];
+        const index = this.rowData.findIndex(x => x._id === id);
+        this.rowData.splice(index, 1);
+        this.gridApi.setRowData(this.rowData);
       }
     }))
   }

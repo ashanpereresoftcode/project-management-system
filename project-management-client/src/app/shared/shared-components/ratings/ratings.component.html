@@ -10,7 +10,7 @@
             Star count is <strong>required</strong> and cannot be zero
         </mat-error>
     </div>
-    <p>
+    <p *ngIf="showRatedLabel">
         Your rated <span class="body-2">{{rating}}</span> / <span class="body-2">{{starCount}}</span>
     </p>
 </div>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 // MATERIAL IMPORTS
 import { MatCardModule } from '@angular/material/card';
@@ -19,20 +20,29 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { SkillAssessmentComponent } from './skill-assessment.component';
 import { ViewAssessmentsComponent } from './view-assessments/view-assessments.component';
 import { CreateAssessmentComponent } from './create-assessment/create-assessment.component';
 import { SkillAssessmentRoutingModule } from './skill-assessment.routing';
 import { SharedComponentsModule } from '../../shared/shared-components';
-import { SkillCellRendererComponent } from './skill-cell-renderer/skill-cell-renderer.component'
+import { SkillCellRendererComponent } from './skill-cell-renderer/skill-cell-renderer.component';
+import { AssignSkillsComponent } from './assign-skills/assign-skills.component'
+import { AssignSkillCellRendererComponent } from './assign-skill-cell-renderer/assign-skill-cell-renderer.component';
+import { AssignSkillActionCellRendererComponent } from './assign-skill-action-cell-renderer/assign-skill-action-cell-renderer.component';
+import { AssignedSkillCardCellRendererComponent } from './assigned-skill-card-cell-renderer/assigned-skill-card-cell-renderer.component';
 
 @NgModule({
   declarations: [
     SkillAssessmentComponent,
     ViewAssessmentsComponent,
     CreateAssessmentComponent,
-    SkillCellRendererComponent
+    SkillCellRendererComponent,
+    AssignSkillsComponent,
+    AssignSkillCellRendererComponent,
+    AssignSkillActionCellRendererComponent,
+    AssignedSkillCardCellRendererComponent
   ],
   imports: [
     CommonModule,
@@ -54,8 +64,13 @@ import { SkillCellRendererComponent } from './skill-cell-renderer/skill-cell-ren
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    AgGridModule,
-    SharedComponentsModule
+    AgGridModule.withComponents([
+      AssignSkillCellRendererComponent,
+      SkillCellRendererComponent
+    ]),
+    SharedComponentsModule,
+    NgSelectModule,
+    MatAutocompleteModule
   ]
 })
 

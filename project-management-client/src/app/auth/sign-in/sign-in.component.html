@@ -1,26 +1,31 @@
 <div class="auth-container">
     <div class="auth-container__auth-content">
-        <div class="p-1">
+        <div class="p-2 flex justify-center">
+            <img class="w-60" src="./assets/user.svg" alt="avatar">
+        </div>
+        <div class="p-2" [formGroup]="authForm">
             <div class="flex">
                 <mat-form-field class="flex-1" appearance="outline">
                     <mat-label>User Name / Email</mat-label>
-                    <input matInput placeholder="User Name / Email">
-                    <!-- <mat-error *ngIf="userForm?.get('userName')?.hasError('required')">This field is required</mat-error> -->
+                    <input matInput placeholder="User Name / Email" formControlName="userNameOrEmail">
+                    <mat-error *ngIf="authForm.get('userNameOrEmail')?.hasError('required')">This field is required
+                    </mat-error>
                 </mat-form-field>
             </div>
             <div class="flex">
                 <mat-form-field class="flex-1" appearance="outline">
                     <mat-label>Password</mat-label>
-                    <input matInput type="password" placeholder="Password">
-                    <!-- <mat-error *ngIf="userForm?.get('firstName')?.hasError('required')">This field is required</mat-error> -->
+                    <input matInput type="password" placeholder="Password" formControlName="password">
+                    <mat-error *ngIf="authForm?.get('Password')?.hasError('required')">This field is required
+                    </mat-error>
                 </mat-form-field>
             </div>
         </div>
-        <div class="flex">
-            <button mat-raised-button class="ml-1">Login</button>
-            <button mat-raised-button class="ml-1" (click)="openModal()">Register</button>
-            <button mat-raised-button class="ml-1">Forget Password</button>
-            <button mat-raised-button class="ml-1">Login Via Google</button>
+        <div class="flex ml-1">
+            <button mat-raised-button class="ml-1" color="primary" (click)="loginToSystem()">Login</button>
+            <button mat-button class="ml-1" color="primary" (click)="openModal()">Register</button>
+            <!-- <button mat-raised-button class="ml-1">Forget Password</button>
+            <button mat-raised-button class="ml-1">Login Via Google</button> -->
         </div>
     </div>
     <div class="auth-container__background"></div>

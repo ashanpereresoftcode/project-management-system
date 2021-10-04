@@ -59,21 +59,26 @@ export class CreateAssessmentComponent implements OnInit {
         this.skill.skillCode = skill.skillCode;
         this.skill.description = skill.description;
         this.skill.rating = skill.rating;
-        // add the service call from here
-        const skillEditedRef = { isEditMode: true, skill: this.skill };
-        this.toastrService.success('Successfully updated.', 'Success');
-        this.skillAssessmentService.afterSave.emit(skillEditedRef);
-        this.closeModal();
+
+        this.skillAssessmentService.updateSkill(this.skill).subscribe(result => {
+          if (result) {
+            const skillEditedRef = { isEditMode: true, skill: this.skill };
+            this.toastrService.success('Successfully updated.', 'Success');
+            this.skillAssessmentService.afterSave.emit(skillEditedRef);
+            this.closeModal();
+          }
+        })
       } else {
-        // add the service call from here
-        this.toastrService.success('Successfully saved.', 'Success');
-        this.skillAssessmentService.afterSave.emit(skill);
-        this.closeModal();
+        this.skillAssessmentService.createSkill(skill).subscribe(serviceResult => {
+          if (serviceResult && serviceResult.validity) { 
+            this.toastrService.success('Successfully saved.', 'Success');
+            this.skillAssessmentService.afterSave.emit(skill);
+            this.closeModal();
+          }
+        })
       }
     } else {
       this.toastrService.error('Please check the form again.', 'Error');
     }
-
   }
-
 }

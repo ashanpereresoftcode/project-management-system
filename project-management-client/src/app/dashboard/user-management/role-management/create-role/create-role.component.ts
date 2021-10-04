@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject, EventEmitter, Output, Input } from '@angular/core';
+import { Component, OnInit, Inject, EventEmitter, Output, Input, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../../shared/services';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -10,14 +11,14 @@ import { AuthService } from '../../../../shared/services';
   templateUrl: './create-role.component.html',
   styleUrls: ['./create-role.component.scss']
 })
-export class CreateRoleComponent implements OnInit {
+export class CreateRoleComponent implements OnInit, OnDestroy {
 
   @Input() role!: any;
   roleForm!: FormGroup;
-
+  roleSubscriptions: Subscription[] = [];
   // projectStatus: any[] = [
-  //   { value: 'todo', viewValue: 'Todo' },
-  //   { value: 'in-progress', viewValue: 'In-progress' },
+  //   { value: 'active', viewValue: 'active' },
+  //   { value: 'in-active', viewValue: 'in-active' },
   //   { value: 'done', viewValue: 'Done' }
   // ];
 
@@ -60,25 +61,47 @@ export class CreateRoleComponent implements OnInit {
 
 
     if (this.roleForm.valid) {
-      const role = this.roleForm.value;
+      let role: any = {};
+      role["roleCode"] = this.roleForm.get('roleCode')?.value;
+      role["roleName"] = this.roleForm.get('roleName')?.value;
+      role["roleDescription"] = this.roleForm.get('roleDescription')?.value;
+      role["permissions"] = [];
 
       if (this.role) {
         this.role.roleName = role.roleName;
         this.role.roleCode = role.roleCode;
-        this.role.roleDescripotion = role.roleDescripotion;
-        // add the service call from here
-        const referrence = { isEditMode: true, role: this.role };
-        this.toastrService.success('Successfully updated.', 'Success');
-        this.authService.onUserAfterSave.emit(referrence);
-        this.closeModal();
+        this.role.roleDescription = role.roleDescription;
+        this.roleSubscriptions.push(this.authService.updateRole(this.role).subscribe(serviceResult => {
+          if (serviceResult) {
+            const referrence = { isEditMode: true, role: this.role };
+            this.toastrService.success('Successfully updated.', 'Success');
+            this.authService.onRoleAfterSave.emit(referrence);
+            this.closeModal();
+          }
+        }, error => {
+          console.log(error);
+        }))
       } else {
-        // add the service call from here
-        this.toastrService.success('Successfully saved.', 'Success');
-        this.authService.onUserAfterSave.emit(role);
-        this.closeModal();
+        this.roleSubscriptions.push(this.authService.addRole(role).subscribe(serviceResult => {
+          if (serviceResult && serviceResult.validity) {
+            this.toastrService.success('Successfully saved.', 'Success');
+            this.authService.onRoleAfterSave.emit(serviceResult.result);
+            this.closeModal();
+          }
+        }, error => {
+          console.log(error);
+        }))
       }
     } else {
       this.toastrService.error('Please check the form again.', 'Error');
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.roleSubscriptions && this.roleSubscriptions.length > 0) {
+      this.roleSubscriptions.forEach(s => {
+        s.unsubscribe();
+      })
     }
   }
 }

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICellRendererParams } from "ag-grid-community";
 import { MatDialog } from '@angular/material/dialog';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { CreateProjectComponent } from '../create-project/create-project.component';
-import { ProjectAssignmentComponent } from '../../../shared/shared-components';
 import { ProjectManagementService } from '../../../shared/services';
 
 @Component({
@@ -10,10 +12,16 @@ import { ProjectManagementService } from '../../../shared/services';
   templateUrl: './project-action-cell-rederer.component.html',
   styleUrls: ['./project-action-cell-rederer.component.scss']
 })
-export class ProjectActionCellRedererComponent implements OnInit {
+export class ProjectActionCellRedererComponent implements OnInit, OnDestroy {
   data: any;
+  @BlockUI() blockUI!: NgBlockUI;
 
-  constructor(public dialog: MatDialog, private projectManagementService: ProjectManagementService) {
+  projectSubscriptions: Subscription[] = [];
+
+  constructor(
+    public dialog: MatDialog,
+    private projectManagementService: ProjectManagementService,
+    private toastrService: ToastrService) {
   }
 
   ngOnInit = () => {
@@ -41,15 +49,39 @@ export class ProjectActionCellRedererComponent implements OnInit {
     });
   }
 
-  openAssignment = () => {
-    this.dialog.open(ProjectAssignmentComponent, {
-      width: '50%',
-      height: 'auto',
-      data: {}
-    })
+  deleteProject = () => {
+    this.blockUI.start('Deleting....');
+    const appIds: string[] = [].concat(this.data._id);
+    if (appIds && appIds.length > 0) {
+      this.proceedDelete(appIds);
+    } else {
+      this.toastrService.error("Please select items to delete.", "Error");
+      this.blockUI.stop();
+    }
   }
 
-  deleteProject = () => {
-    this.projectManagementService.afterDelete.emit(true);
+  proceedDelete = (appIds: string[]) => {
+    let form = new FormData();
+    form.append("projectIds", JSON.stringify(appIds));
+
+    this.projectSubscriptions.push(this.projectManagementService.deleteProjects(form).subscribe((deletedResult: any) => {
+      if (deletedResult) {
+        this.projectManagementService.afterDelete.emit({ deleted: true, projectIds: appIds });
+        this.toastrService.success('Successfully deleted.', 'Success');
+      }
+      this.blockUI.stop();
+    }, () => {
+      this.toastrService.error('Failed to delete', 'Error');
+      this.blockUI.stop();
+    }));
   }
+
+  ngOnDestroy() {
+    if (this.projectSubscriptions && this.projectSubscriptions.length > 0) {
+      this.projectSubscriptions.forEach(s => {
+        s.unsubscribe();
+      })
+    }
+  }
+
 }

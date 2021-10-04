@@ -10,7 +10,7 @@ export class AuthService {
 
   onUserAfterSave: EventEmitter<any> = new EventEmitter<any>();
   onUserAfterDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
-  
+
   onRoleAfterSave: EventEmitter<any> = new EventEmitter<any>();
   onRoleAfterDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -20,6 +20,11 @@ export class AuthService {
   baseUrl: string = environment.baseUrl;
 
   constructor(private http: HttpClient) { }
+
+  saveUser = (payload: any): Observable<any> => {
+    const url: string = `${this.baseUrl}/api/v1/user/sign-up`;
+    return this.http.post(url, payload);
+  }
 
   fetchUsers(): Observable<any> {
     const url: string = `${this.baseUrl}/api/v1/user/get-all`;

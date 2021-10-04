@@ -2,10 +2,12 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 @import '~ngx-toastr/toastr';
+@import "~@ng-select/ng-select/themes/default.theme.css";
 
 
 @import "../../node_modules/ag-grid-community/dist/styles/ag-grid.css";
 @import "../../node_modules/ag-grid-community/dist/styles/ag-theme-material.css";
+@import "../../node_modules/ag-grid-community/dist/styles/ag-theme-alpine";
 @import "./base";
 @import "./font-overrides";
 @import "./overrides";

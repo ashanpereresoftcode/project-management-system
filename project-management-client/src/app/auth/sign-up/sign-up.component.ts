@@ -42,7 +42,9 @@ export class SignUpComponent implements OnInit {
       nic: new FormControl(null),
       passportId: new FormControl(null),
       roles: new FormControl(null),
-      profilePic: new FormControl(null)
+      profilePic: new FormControl(null),
+      designation: new FormControl(null),
+      skills: new FormControl(null),
     })
   }
 
@@ -63,31 +65,16 @@ export class SignUpComponent implements OnInit {
 
 
     if (this.userForm.valid) {
-      const user = this.userForm.value;
-
-      if (this.user) {
-        this.user.userName = user.userName;
-        this.user.firstName = user.firstName;
-        this.user.lastName = user.lastName;
-        this.user.middleName = user.middleName;
-        this.user.userEmail = user.userEmail;
-        this.user.contact = user.contact;
-        this.user.userAddress = user.userAddress;
-        this.user.nic = user.nic;
-        this.user.passportId = user.passportId;
-        this.user.roles = user.roles;
-        this.user.profilePic = user.profilePic;
-        // add the service call from here
-        const referrence = { isEditMode: true, user: this.user };
-        this.toastrService.success('Successfully updated.', 'Success');
-        this.authService.onUserAfterSave.emit(referrence);
-        this.closeModal();
-      } else {
-        // add the service call from here
-        this.toastrService.success('Successfully saved.', 'Success');
-        this.authService.onUserAfterSave.emit(user);
-        this.closeModal();
-      }
+      const user = this.userForm.getRawValue();
+      this.authService.saveUser(user).subscribe(serviceResult => {
+        if (serviceResult) {
+          this.toastrService.success('Successfully saved.', 'Success');
+          this.authService.onUserAfterSave.emit(user);
+          this.closeModal();
+        }
+      }, error => {
+        console.log(error);
+      })
     } else {
       this.toastrService.error('Please check the form again.', 'Error');
     }

@@ -1,5 +1,5 @@
-<div class="flex justify-between items-center">
-    <h2>Create Project</h2>
+<!-- <div class="flex justify-between items-center">
+    <h2>Assign Project</h2>
     <button mat-icon-button (click)="closeModal()">
         <mat-icon>close</mat-icon>
     </button>
@@ -31,4 +31,50 @@
 
 <div class="flex justify-end">
     <button mat-raised-button color="primary" (click)="assignProject()">Assign Projects</button>
+</div> -->
+
+
+
+<div class="flex justify-between items-center">
+    <h2>Project Assignment</h2>
+    <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+    </button>
 </div>
+
+<div class="pt-4" [formGroup]="projectAssignmentForm">
+    <div class="flex">
+        <!-- <mat-form-field class="w-2/4" appearance="outline">
+            <mat-label>Search Skills</mat-label>
+            <input type="text" placeholder="Search Skills" aria-label="Search Skills" matInput
+                formControlName="selectedSkills" [matAutocomplete]="auto" autocomplete="off">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let skill of filteredOptions | async" [value]="skill?.skillCode">
+                    {{skill?.skillName}}
+                </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="skillAssignmentForm?.get('selectedSkills')?.hasError('required')">This field is
+                required</mat-error>
+        </mat-form-field> -->
+
+        <mat-form-field class="w-2/4" appearance="outline">
+            <mat-label>Search Project</mat-label>
+            <mat-select formControlName="selectedProject" placeholder="Search Project">
+                <mat-option *ngFor="let project of projects" [value]="project?.projectCode">{{project?.projectName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="pt-8">
+    <div class="h-96">
+        <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-alpine"
+            [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowData]="rowData"
+            (gridReady)="onGridReady($event)">
+        </ag-grid-angular>
+    </div>
+</div>
+
+<!-- <div class="flex justify-end">
+    <button mat-raised-button color="primary" (click)="assignProject()">Assign Skills</button>
+</div> -->

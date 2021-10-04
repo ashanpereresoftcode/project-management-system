@@ -46,12 +46,12 @@ export class ViewRolesComponent implements OnInit, OnDestroy {
         suppressAutoSize: true,
         width: 150
       },
-      {
-        field: 'createdBy',
-        headerName: 'Create By',
-        width: 120,
-        suppressAutoSize: true,
-      },
+      // {
+      //   field: 'createdBy',
+      //   headerName: 'Create By',
+      //   width: 120,
+      //   suppressAutoSize: true,
+      // },
       {
         field: 'createdOn',
         headerName: 'Created On',
@@ -68,56 +68,30 @@ export class ViewRolesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.rowData =
-      [
-        {
-          roleName: "AshanPerera@@1",
-          roleCode: "Ashan",
-          roleDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-        {
-          roleName: "AshanPerera@@1",
-          roleCode: "Ashan",
-          roleDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-        {
-          roleName: "AshanPerera@@1",
-          roleCode: "Ashan",
-          roleDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-        {
-          roleName: "AshanPerera@@1",
-          roleCode: "Ashan",
-          roleDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-        {
-          roleName: "AshanPerera@@1",
-          roleCode: "Ashan",
-          roleDescription: "Perera",
-          createdBy: "AshanPerera@gmail.com",
-          createdOn: "711071588",
-        },
-      ]
-
+    this.loadAllRoles();
     this.roleCreateListener();
     this.roleDeleteListener();
+  }
+
+  loadAllRoles = () => {
+    this.roleSubscriptions.push(this.authService.fetchRoleList().subscribe(roleResult => {
+      if (roleResult && roleResult.validity) {
+        this.rowData = roleResult.result;
+      }
+    }, error => {
+      console.log(error);
+    }))
   }
 
   roleCreateListener = () => {
     this.roleSubscriptions.push(this.authService.onRoleAfterSave.subscribe(result => {
       if (result) {
         if (result && result.isEditMode) {
-          // map function.
+          const index = this.rowData.findIndex(x => x._id === result.role._id);
+          this.rowData[index] = result.role;
+          this.gridApi.setRowData(this.rowData);
         } else {
-          this.rowData.push(result);
+          this.rowData.unshift(result);
           this.gridApi.setRowData(this.rowData);
         }
       }
@@ -125,10 +99,12 @@ export class ViewRolesComponent implements OnInit, OnDestroy {
   }
 
   roleDeleteListener = () => {
-    this.roleSubscriptions.push(this.authService.onRoleAfterDelete.subscribe(result => {
-      debugger
-      if (result) {
-        // remove data from the array.
+    this.roleSubscriptions.push(this.authService.onRoleAfterDelete.subscribe((result: any) => {
+      if (result && result.deleted) {
+        const id = result.roleIds[0];
+        const index = this.rowData.findIndex(x => x._id === id);
+        this.rowData.splice(index, 1);
+        this.gridApi.setRowData(this.rowData);
       }
     }))
   }

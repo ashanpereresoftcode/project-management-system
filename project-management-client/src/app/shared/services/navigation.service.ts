@@ -20,11 +20,11 @@ export class NavigationService {
       children: []
     },
     {
-      displayName: 'Project Management',
+      displayName: 'Resource Management',
       iconName: 'manage_accounts',
       children: [
         {
-          displayName: 'View Projects',
+          displayName: 'View Resources',
           iconName: 'subdirectory_arrow_rightz',
           route: '/dashboard/project-management/view-projects',
           children: [],
@@ -32,13 +32,19 @@ export class NavigationService {
       ]
     },
     {
-      displayName: 'Skill Assessment',
+      displayName: 'Skill Portal',
       iconName: 'inventory',
       children: [
         {
           displayName: 'View Skills',
           iconName: 'subdirectory_arrow_rightz',
           route: '/dashboard/skill-assessment/view-assessments',
+          children: []
+        },
+        {
+          displayName: 'Assign Skills',
+          iconName: 'subdirectory_arrow_rightz',
+          route: '/dashboard/skill-assessment/assign-skills',
           children: []
         }
       ]

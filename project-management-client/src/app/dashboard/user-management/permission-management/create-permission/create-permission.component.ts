@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, EventEmitter, Output, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../../shared/services';
 @Component({
@@ -13,9 +14,11 @@ export class CreatePermissionComponent implements OnInit {
   @Input() permission!: any;
   permissionForm!: FormGroup;
 
+  permissionSubscription: Subscription[] = [];
+
   // projectStatus: any[] = [
-  //   { value: 'todo', viewValue: 'Todo' },
-  //   { value: 'in-progress', viewValue: 'In-progress' },
+  //   { value: 'active', viewValue: 'active' },
+  //   { value: 'in-active', viewValue: 'in-active' },
   //   { value: 'done', viewValue: 'Done' }
   // ];
 
@@ -64,16 +67,29 @@ export class CreatePermissionComponent implements OnInit {
         this.permission.permissionName = permission.permissionName;
         this.permission.permissionCode = permission.permissionCode;
         this.permission.permissionDescripotion = permission.permissionDescripotion;
-        // add the service call from here
-        const referrence = { isEditMode: true, permission: this.permission };
-        this.toastrService.success('Successfully updated.', 'Success');
-        this.authService.onUserAfterSave.emit(referrence);
-        this.closeModal();
+
+        this.permissionSubscription.push(this.authService.updateUserPermission(this.permission).subscribe(serviceRes => {
+          if (serviceRes) {
+            const referrence = { isEditMode: true, permission: this.permission };
+            this.toastrService.success('Successfully updated.', 'Success');
+            this.authService.onPermissionAfterSave.emit(referrence);
+            this.closeModal();
+          }
+        }, error => {
+          console.log(error);
+        }))
+
       } else {
-        // add the service call from here
-        this.toastrService.success('Successfully saved.', 'Success');
-        this.authService.onUserAfterSave.emit(permission);
-        this.closeModal();
+        this.permissionSubscription.push(this.authService.saveUserPermission(permission).subscribe(servicesRes => {
+          if (servicesRes) {
+            this.toastrService.success('Successfully saved.', 'Success');
+            this.authService.onPermissionAfterSave.emit(servicesRes.result);
+            this.closeModal();
+          }
+        }, e => {
+          console.log(e);
+        }))
+
       }
     } else {
       this.toastrService.error('Please check the form again.', 'Error');

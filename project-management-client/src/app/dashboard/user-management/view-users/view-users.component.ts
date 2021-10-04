@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ColDef, GridApi, GridOptions } from "ag-grid-community";
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import * as moment from 'moment';
 
 import { CreateUserComponent } from '../create-user/create-user.component';
-import { AuthService } from '../../../shared/services';
+import { AuthService, FileService } from '../../../shared/services';
 import { UserManagementActionCellRendererComponent } from '../cell-renderers/user-management-action-cell-renderer/user-management-action-cell-renderer.component';
 
 @Component({
@@ -14,6 +16,8 @@ import { UserManagementActionCellRendererComponent } from '../cell-renderers/use
 })
 export class ViewUsersComponent implements OnInit, OnDestroy {
 
+  @BlockUI() blockUI!: NgBlockUI;
+
   gridApi!: GridApi;
   gridColumnApi: any;
 
@@ -21,11 +25,12 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
   defaultColDef!: ColDef;
   rowData: any[] = [];
   gridOption!: GridOptions;
-  skillSubscriptions: Subscription[] = [];
+  userSubscriptions: Subscription[] = [];
 
   constructor(
     public dialog: MatDialog,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private fileService: FileService) {
 
     this.columnDefs = [
       {
@@ -68,47 +73,28 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.rowData =
-      [
-        {
-          userName: "AshanPerera@@1",
-          firstName: "Ashan",
-          lastName: "Perera",
-          userEmail: "AshanPerera@gmail.com",
-          contact: "711071588",
-        },
-        {
-          userName: "AshanPerera@@1",
-          firstName: "Ashan",
-          lastName: "Perera",
-          userEmail: "AshanPerera@gmail.com",
-          contact: "711071588",
-        },
-        {
-          userName: "AshanPerera@@1",
-          firstName: "Ashan",
-          lastName: "Perera",
-          userEmail: "AshanPerera@gmail.com",
-          contact: "711071588",
-        },
-        {
-          userName: "AshanPerera@@1",
-          firstName: "Ashan",
-          lastName: "Perera",
-          userEmail: "AshanPerera@gmail.com",
-          contact: "711071588",
-        }
-      ]
-
+    this.loadUsers();
     this.skillCreateListener();
     this.skillDeleteListener();
   }
 
+  loadUsers = () => {
+    this.userSubscriptions.push(this.authService.fetchUsers().subscribe(serviceResult => {
+      if (serviceResult && serviceResult.validity) {
+        this.rowData = serviceResult.result;
+      }
+    }, error => {
+      console.log(error);
+    }));
+  }
+
   skillCreateListener = () => {
-    this.skillSubscriptions.push(this.authService.onUserAfterSave.subscribe(result => {
+    this.userSubscriptions.push(this.authService.onUserAfterSave.subscribe(result => {
       if (result) {
         if (result && result.isEditMode) {
-          // map function.
+          const index = this.rowData.findIndex(x => x._id === result.user._id);
+          this.rowData[index] = result.user;
+          this.gridApi.setRowData(this.rowData);
         } else {
           this.rowData.push(result);
           this.gridApi.setRowData(this.rowData);
@@ -118,10 +104,12 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
   }
 
   skillDeleteListener = () => {
-    this.skillSubscriptions.push(this.authService.onUserAfterDelete.subscribe(result => {
-      debugger
+    this.userSubscriptions.push(this.authService.onUserAfterDelete.subscribe((result: any) => {
       if (result) {
-        // remove data from the array.
+        const id = result.userIds[0];
+        const index = this.rowData.findIndex(x => x._id === id);
+        this.rowData.splice(index, 1);
+        this.gridApi.setRowData(this.rowData);
       }
     }))
   }
@@ -132,6 +120,29 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
       height: 'auto',
       data: null
     });
+  }
+
+  exportDataToExcel = () => {
+    this.fileService.exportAsExcelFile(this.rowData, 'sci-users');
+  }
+
+  exportDataToPdf = () => { 
+    this.blockUI.start('Exporting Pdf...');
+      const userList: any[] = this.rowData.map(x => {
+        return {
+          firstName: x.firstName.toLowerCase(),
+          lastName: x.lastName.toLowerCase(),
+          userEmail: x.userEmail.toLowerCase(),
+          contact: x.contact.toLowerCase(),
+          passportId: x.passportId ? x.passportId : '-',
+          middleName: x.middleName ? x.middleName : '-',
+          createdOn: moment(x.createdOn).format('YYYY-MM-DD'),
+          modifiedOn: x.modifiedOn ? moment(x.modifiedOn).format('YYYY-MM-DD') : "-"
+        }
+      });
+      const headers: any[] = ['firstName', 'lastName', 'userEmail', 'contact', 'passportId', 'middleName', 'createdOn', 'modifiedOn'];
+      this.fileService.exportToPDF("sci-user-report", headers, userList, "user-list");
+      this.blockUI.stop();
   }
 
   sizeToFit = () => {
@@ -145,8 +156,8 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy = () => {
-    if (this.skillSubscriptions && this.skillSubscriptions.length > 0) {
-      this.skillSubscriptions.forEach(e => {
+    if (this.userSubscriptions && this.userSubscriptions.length > 0) {
+      this.userSubscriptions.forEach(e => {
         e.unsubscribe();
       })
     }
