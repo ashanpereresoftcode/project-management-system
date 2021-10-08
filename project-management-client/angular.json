@@ -29,11 +29,11 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "allowedCommonJsDependencies": [
+              "canvg",
               "file-saver",
               "xlsx",
               "jspdf",
               "moment",
-              "canvg",
               "raf",
               "@babel/runtime-corejs3",
               "jspdf-autotable",

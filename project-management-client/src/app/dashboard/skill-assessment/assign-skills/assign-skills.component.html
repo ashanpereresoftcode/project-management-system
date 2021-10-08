@@ -12,7 +12,7 @@
             <ng-option *ngFor="let user of users" [value]="user">{{user.firstName}}</ng-option>
         </ng-select>
     </div>
-    <div class="flex">
+    <div class="flex" *ngIf="skillAssignFormGroup.get('resource')?.valid">
         <button class="h-16" mat-raised-button (click)="openSkillAssignment()">
             <mat-icon>assignment_turned_in</mat-icon>
             <span class="text-xl">Assign Skill</span>

@@ -5,7 +5,7 @@
     </button>
 </div>
 
-<div class="flex" [formGroup]="skillAssignFormGroup">
+<div class="flex mt-2" [formGroup]="skillAssignFormGroup">
     <ng-select [multiple]="true" class="w-1/2" name="resource" id="resource" placeholder="Select Skill"
         formControlName="skill" (change)="onSkillSelection()">
         <ng-option *ngFor="let skill of skills" [value]="skill">{{skill.skillName}}</ng-option>
@@ -20,13 +20,12 @@
 
 <div class="outer-div pt-8">
     <div class="grid-wrapper w-full">
-        <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-material"
+        <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-alpine"
             [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowData]="rowData"
             (gridReady)="onGridReady($event)">
         </ag-grid-angular>
     </div>
 </div>
-
 
 <!-- <div class="flex justify-end">
     <button mat-raised-button color="primary" (click)="saveSkillAssessment()">{{ skill ? 'Update' : 'Save' }}</button>
