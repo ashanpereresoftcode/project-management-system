@@ -1,18 +1,25 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatAccordion } from '@angular/material/expansion';
 import { ColDef, GridApi, GridOptions } from "ag-grid-community";
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { SkillCellRendererComponent } from './skill-cell-renderer/skill-cell-renderer.component';
 import { SkillAssessmentService, AuthService } from '../../services';
+
+
 @Component({
   selector: 'app-skill-assignment',
   templateUrl: './skill-assignment.component.html',
   styleUrls: ['./skill-assignment.component.scss']
 })
 export class SkillAssignmentComponent implements OnInit {
+
+  // @ViewChild(MatAccordion) accordion!: MatAccordion;
+
+  closeExpansion!: boolean;
   filteredSkills: Observable<any[]> | undefined;
   selectedSkill: any;
   subscriptions: Subscription[] = [];
@@ -29,15 +36,18 @@ export class SkillAssignmentComponent implements OnInit {
   gridOption!: GridOptions;
   skillSubscriptions: Subscription[] = [];
 
+  panelOpenState = false;
+
   constructor(
     public matDialogRef: MatDialogRef<SkillAssignmentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private skillAssessmentService: SkillAssessmentService,
     private authService: AuthService) {
-
+    matDialogRef.disableClose = false;
   }
 
   ngOnInit(): void {
+    this.matDialogRef.disableClose = true;
     this.initializeFormGroup();
     this.initializeColumns();
     this.loadAllSkills();
@@ -71,6 +81,8 @@ export class SkillAssignmentComponent implements OnInit {
   loadAllSkills = () => {
     this.subscriptions.push(this.skillAssessmentService.getAllSkills().subscribe((skills: any) => {
       if (skills && skills.validity) {
+        console.log(skills);
+
         this.skills = skills.result;
       }
     }, error => {

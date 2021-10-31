@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { PerfectScrollbarModule, PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -22,6 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { MenuItemsComponent } from './menu-items/menu-items.component';
 import { ProjectAssignmentComponent } from './project-assignment/project-assignment.component';
@@ -30,6 +31,12 @@ import { SkillAssignmentComponent } from './skill-assignment/skill-assignment.co
 import { SkillRatingCellRendererComponent } from './skill-rating-cell-renderer/skill-rating-cell-renderer.component';
 import { ProjectAssignCellRendererComponent } from './project-assign-cell-renderer/project-assign-cell-renderer.component';
 import { SkillCellRendererComponent } from './skill-assignment/skill-cell-renderer/skill-cell-renderer.component';
+
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
+
 
 @NgModule({
   declarations: [
@@ -66,12 +73,21 @@ import { SkillCellRendererComponent } from './skill-assignment/skill-cell-render
     FormsModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
-    NgSelectModule
+    NgSelectModule,
+    MatExpansionModule,
+    PerfectScrollbarModule
   ],
   exports: [
     MenuItemsComponent,
     ProjectAssignmentComponent,
-    RatingsComponent
+    RatingsComponent,
+    SkillAssignmentComponent
+  ],
+  providers: [
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+    }
   ]
 })
 

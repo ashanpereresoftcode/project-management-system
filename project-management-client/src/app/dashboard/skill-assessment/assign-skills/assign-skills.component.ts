@@ -276,7 +276,7 @@ export class AssignSkillsComponent implements OnInit, OnDestroy {
   openSkillAssignment = () => {
     this.matDialog.open(SkillAssignmentComponent, {
       width: '50%',
-      height: '50%',
+      height: '60%',
     });
   }
 
