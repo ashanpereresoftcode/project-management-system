@@ -1,14 +1,10 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatAccordion } from '@angular/material/expansion';
 import { ColDef, GridApi, GridOptions } from "ag-grid-community";
-import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { SkillCellRendererComponent } from './skill-cell-renderer/skill-cell-renderer.component';
 import { SkillAssessmentService, AuthService } from '../../services';
-
 
 @Component({
   selector: 'app-skill-assignment',
@@ -17,7 +13,7 @@ import { SkillAssessmentService, AuthService } from '../../services';
 })
 export class SkillAssignmentComponent implements OnInit {
 
-  // @ViewChild(MatAccordion) accordion!: MatAccordion;
+  @Output() afterSkillAssignment: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   closeExpansion!: boolean;
   filteredSkills: Observable<any[]> | undefined;
@@ -41,8 +37,7 @@ export class SkillAssignmentComponent implements OnInit {
   constructor(
     public matDialogRef: MatDialogRef<SkillAssignmentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private skillAssessmentService: SkillAssessmentService,
-    private authService: AuthService) {
+    private skillAssessmentService: SkillAssessmentService) {
     matDialogRef.disableClose = false;
   }
 
@@ -74,7 +69,8 @@ export class SkillAssignmentComponent implements OnInit {
   initializeFormGroup = () => {
     this.skillAssignFormGroup = new FormGroup({
       skill: new FormControl(null, Validators.required),
-      rating: new FormControl(null)
+      rating: new FormControl(null),
+      comments: new FormControl(null)
     })
   }
 
@@ -82,7 +78,6 @@ export class SkillAssignmentComponent implements OnInit {
     this.subscriptions.push(this.skillAssessmentService.getAllSkills().subscribe((skills: any) => {
       if (skills && skills.validity) {
         console.log(skills);
-
         this.skills = skills.result;
       }
     }, error => {
@@ -113,4 +108,17 @@ export class SkillAssignmentComponent implements OnInit {
     this.matDialogRef.close();
   }
 
+  onAssign = () => {
+    if (this.skillAssignFormGroup.valid) {
+      const assignedSkill = this.skillAssignFormGroup.value;
+      this.skillAssessmentService.saveAssignedSkill(assignedSkill).subscribe(savedResult => {
+        if (savedResult) {
+          this.afterSkillAssignment.emit(this.skillAssignFormGroup.value);
+          this.closeModal();
+        }
+      })
+    } else {
+      console.log(this.skillAssignFormGroup.errors);
+    }
+  }
 }

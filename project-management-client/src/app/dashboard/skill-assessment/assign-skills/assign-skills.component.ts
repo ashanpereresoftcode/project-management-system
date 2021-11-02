@@ -274,10 +274,17 @@ export class AssignSkillsComponent implements OnInit, OnDestroy {
   }
 
   openSkillAssignment = () => {
-    this.matDialog.open(SkillAssignmentComponent, {
-      width: '50%',
-      height: '60%',
+    const skillAssignmentRef = this.matDialog.open(SkillAssignmentComponent, {
+      width: '60%',
+      height: 'auto',
     });
+
+    skillAssignmentRef.componentInstance.afterSkillAssignment.subscribe(res => {
+      // refresh
+      this.loadUsers();
+      this.grid
+      console.log(res);
+    })
   }
 
   ngOnDestroy() {
