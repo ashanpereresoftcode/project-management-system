@@ -103,6 +103,7 @@ exports.saveAssignedSkill = async (req, res) => {
                 ratingCard: payload.ratingCard,
                 comments: payload.comments,
             }
+            
             const savedResult = await assignedSkillManager.saveAssignedSkill(assignedSkill);
             if (savedResult) {
                 res.status(201).json(savedResult)

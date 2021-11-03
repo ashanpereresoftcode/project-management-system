@@ -185,48 +185,48 @@ export class AssignSkillsComponent implements OnInit, OnDestroy {
     this.sizeToFit();
   }
 
-  saveSkillAssignment = () => {
-    // open the skill selection and rating screen
-    this.blockUI.start('Processing ......');
-    Object.keys(this.skillAssignFormGroup.controls).forEach(e => {
-      const control = this.skillAssignFormGroup.get(e);
-      control?.markAsTouched();
-      control?.updateValueAndValidity({ onlySelf: true });
-    });
+  // saveSkillAssignment = () => {
+  //   // open the skill selection and rating screen
+  //   this.blockUI.start('Processing ......');
+  //   Object.keys(this.skillAssignFormGroup.controls).forEach(e => {
+  //     const control = this.skillAssignFormGroup.get(e);
+  //     control?.markAsTouched();
+  //     control?.updateValueAndValidity({ onlySelf: true });
+  //   });
 
-    const isAlreadyAssigned = this.selectedUser.assignedSkills.some((s: any) => s.skill._id === this.selectedSkill._id);
-    if (isAlreadyAssigned) {
-      this.toastrService.error('Skill is already assigned.', 'Error');
-      this.blockUI.stop();
-    } else {
+  //   const isAlreadyAssigned = this.selectedUser.assignedSkills.some((s: any) => s.skill._id === this.selectedSkill._id);
+  //   if (isAlreadyAssigned) {
+  //     this.toastrService.error('Skill is already assigned.', 'Error');
+  //     this.blockUI.stop();
+  //   } else {
 
-      if (this.skillAssignFormGroup.valid) {
-        const formValues = this.skillAssignFormGroup.getRawValue();
+  //     if (this.skillAssignFormGroup.valid) {
+  //       const formValues = this.skillAssignFormGroup.getRawValue();
 
-        const payload = {
-          skill: this.selectedSkill._id,
-          rating: formValues.rating,
-          ratingCard: this.getRatingCard(),
-          comments: "-",
-          userId: this.selectedUser.userId
-        }
-        this.subscriptions.push(this.skillAssessmentService.saveAssignedSkill(payload).subscribe(serviceResult => {
-          if (serviceResult) {
-            let assignmentDetail = serviceResult.result.assignmentDetail;
-            assignmentDetail.skill = this.selectedSkill;
-            this.rowData.push(assignmentDetail);
-            this.gridApi.setRowData(this.rowData);
-            this.toastrService.success('Successfull saved.', 'Success');
-            this.clearFields();
-          }
-          this.blockUI.stop();
-        }, error => {
-          console.log(error);
-          this.blockUI.stop();
-        }))
-      }
-    }
-  }
+  //       const payload = {
+  //         skill: this.selectedSkill._id,
+  //         rating: formValues.rating,
+  //         ratingCard: this.getRatingCard(),
+  //         comments: "-",
+  //         userId: this.selectedUser.userId
+  //       }
+  //       this.subscriptions.push(this.skillAssessmentService.saveAssignedSkill(payload).subscribe(serviceResult => {
+  //         if (serviceResult) {
+  //           let assignmentDetail = serviceResult.result.assignmentDetail;
+  //           assignmentDetail.skill = this.selectedSkill;
+  //           this.rowData.push(assignmentDetail);
+  //           this.gridApi.setRowData(this.rowData);
+  //           this.toastrService.success('Successfull saved.', 'Success');
+  //           this.clearFields();
+  //         }
+  //         this.blockUI.stop();
+  //       }, error => {
+  //         console.log(error);
+  //         this.blockUI.stop();
+  //       }))
+  //     }
+  //   }
+  // }
 
   clearFields = () => {
     this.selectedSkill = null;
@@ -277,13 +277,17 @@ export class AssignSkillsComponent implements OnInit, OnDestroy {
     const skillAssignmentRef = this.matDialog.open(SkillAssignmentComponent, {
       width: '60%',
       height: 'auto',
+      data: { user: this.selectedUser }
     });
 
-    skillAssignmentRef.componentInstance.afterSkillAssignment.subscribe(res => {
-      // refresh
-      this.loadUsers();
-      this.grid
-      console.log(res);
+    skillAssignmentRef.componentInstance.afterSkillAssignment.subscribe((res: any) => {
+      if (res) {
+        const assignmentDetail = res?.result?.assignmentDetail;
+        assignmentDetail.skill = res?.assignedSkill?.skill;
+        this.rowData.push(assignmentDetail);
+        this.gridApi.setRowData(this.rowData);
+        console.log(res);
+      }
     })
   }
 
