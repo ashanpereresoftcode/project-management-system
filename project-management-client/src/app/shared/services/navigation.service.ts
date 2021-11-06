@@ -20,7 +20,7 @@ export class NavigationService {
       children: []
     },
     {
-      displayName: 'Resource Management',
+      displayName: 'Projects',
       iconName: 'manage_accounts',
       children: [
         {

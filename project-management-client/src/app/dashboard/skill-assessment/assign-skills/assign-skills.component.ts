@@ -11,6 +11,7 @@ import { AssignSkillCellRendererComponent } from '../assign-skill-cell-renderer/
 import { AssignSkillActionCellRendererComponent } from '../assign-skill-action-cell-renderer/assign-skill-action-cell-renderer.component';
 import { AssignedSkillCardCellRendererComponent } from '../assigned-skill-card-cell-renderer/assigned-skill-card-cell-renderer.component';
 import { SkillAssignmentComponent } from '../../../shared/shared-components';
+import { SkillReportComponent } from '../skill-report/skill-report.component';
 
 @Component({
   selector: 'app-assign-skills',
@@ -289,6 +290,14 @@ export class AssignSkillsComponent implements OnInit, OnDestroy {
         console.log(res);
       }
     })
+  }
+
+  openSkillAssignmentReport = () => {
+    const skillReportDialog = this.matDialog.open(SkillReportComponent, {
+      width: '60%',
+      height: '95%',
+      data: { user: this.selectedUser }
+    });
   }
 
   ngOnDestroy() {

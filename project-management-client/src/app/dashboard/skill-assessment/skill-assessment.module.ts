@@ -32,6 +32,7 @@ import { AssignSkillsComponent } from './assign-skills/assign-skills.component'
 import { AssignSkillCellRendererComponent } from './assign-skill-cell-renderer/assign-skill-cell-renderer.component';
 import { AssignSkillActionCellRendererComponent } from './assign-skill-action-cell-renderer/assign-skill-action-cell-renderer.component';
 import { AssignedSkillCardCellRendererComponent } from './assigned-skill-card-cell-renderer/assigned-skill-card-cell-renderer.component';
+import { SkillReportComponent } from './skill-report/skill-report.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { AssignedSkillCardCellRendererComponent } from './assigned-skill-card-ce
     AssignSkillsComponent,
     AssignSkillCellRendererComponent,
     AssignSkillActionCellRendererComponent,
-    AssignedSkillCardCellRendererComponent
+    AssignedSkillCardCellRendererComponent,
+    SkillReportComponent
   ],
   imports: [
     CommonModule,
