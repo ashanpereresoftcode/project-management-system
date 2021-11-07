@@ -293,7 +293,7 @@ export class AssignSkillsComponent implements OnInit, OnDestroy {
   }
 
   openSkillAssignmentReport = () => {
-    const skillReportDialog = this.matDialog.open(SkillReportComponent, {
+    this.matDialog.open(SkillReportComponent, {
       width: '60%',
       height: '95%',
       data: { user: this.selectedUser }

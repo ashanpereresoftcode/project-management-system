@@ -18,6 +18,7 @@ const userSchema = mongoose.Schema({
   passportId: { type: String },
   roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role", required: false },],
   assignedSkills: [{ type: mongoose.Schema.Types.ObjectId, ref: "AssignedSkill", required: false },],
+  assignedProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "AssignedProjects", required: false },],
   profilePic: { type: String },
   createdBy: { type: String },
   createdOn: { type: Date },

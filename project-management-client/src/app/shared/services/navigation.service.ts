@@ -24,9 +24,15 @@ export class NavigationService {
       iconName: 'manage_accounts',
       children: [
         {
-          displayName: 'View Resources',
+          displayName: 'View Projects',
           iconName: 'subdirectory_arrow_rightz',
           route: '/dashboard/project-management/view-projects',
+          children: [],
+        },
+        {
+          displayName: 'Assign Projects',
+          iconName: 'subdirectory_arrow_rightz',
+          route: '/dashboard/project-management/assign-project',
           children: [],
         }
       ]

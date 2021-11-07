@@ -38,6 +38,11 @@ export class ProjectManagementService {
     return this.httpClient.post(url, project);
   }
 
+  assignProject = (assignedProject: any): Observable<any> => {
+    const url: string = `${this.baseUrl}/api/v1/project-assignment/create`;
+    return this.httpClient.post(url, assignedProject)
+  }
+
   updateProject = (project: any): Observable<any> => {
     const url: string = `${this.baseUrl}/api/v1/project/update`;
     return this.httpClient.put(url, project);

@@ -1,0 +1,46 @@
+<div class="pr-6">
+    <div class="flex justify-between items-center">
+        <h2>Assign Project</h2>
+        <button mat-icon-button (click)="closeModal()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div [formGroup]="assignedProjectFormGroup">
+        <div class="flex mt-2">
+            <div class="flex flex-col w-1/2">
+                <ng-select name="project" id="project" placeholder="Select Project" formControlName="project">
+                    <ng-option *ngFor="let project of projectDetails" [value]="project">{{project?.projectName}}
+                    </ng-option>
+                </ng-select>
+                <mat-error class="mt-1"
+                    *ngIf="assignedProjectFormGroup.get('project')?.touched && assignedProjectFormGroup.get('project')?.errors?.required">
+                    This field is required.
+                </mat-error>
+            </div>
+
+            <div class="flex flex-col w-1/2 ml-1">
+                <ng-select name="projectAllocation" id="projectAllocation" placeholder="Select Allocation"
+                    formControlName="projectAllocation">
+                    <ng-option *ngFor="let allocation of projectAllocation |keyvalue" [value]="allocation?.key">
+                        {{allocation?.value}}
+                    </ng-option>
+                </ng-select>
+                <mat-error class="mt-1"
+                    *ngIf="assignedProjectFormGroup.get('projectAllocation')?.touched && assignedProjectFormGroup.get('projectAllocation')?.errors?.required">
+                    This field is required.
+                </mat-error>
+            </div>
+        </div>
+
+        <div class="flex mt-2">
+            <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Comments</mat-label>
+                <textarea id="comments" matInput placeholder="Comments" formControlName="comments"></textarea>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="flex">
+        <button mat-stroked-button [disabled]="assignedProjectFormGroup.invalid"
+            (click)="onProjectAssign()">Assign</button>
+    </div>
+</div>

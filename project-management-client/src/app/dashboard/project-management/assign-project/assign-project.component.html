@@ -1,23 +1,22 @@
 <div class="flex">
     <div class="flex justify-between w-full">
-        <span class="text-3xl uppercase">Skill Assessment</span>
-
+        <span class="text-3xl uppercase">Project Allocation</span>
     </div>
 </div>
 
-<form autocomplete="off" [formGroup]="skillAssignFormGroup" class="flex justify-between mt-2">
+<form autocomplete="off" class="flex justify-between mt-2">
     <div class="flex w-1/5">
-        <ng-select class="w-4/5" name="resource" id="resource" placeholder="Search Resource" formControlName="resource"
-            (change)="onResourceSelection()">
-            <ng-option *ngFor="let user of users" [value]="user">{{user.firstName}}</ng-option>
+        <ng-select class="flex w-4/5" name="user" id="user" placeholder="Search Resource"
+            (change)="onResourceSelection()" [(ngModel)]="selectedUser">
+            <ng-option *ngFor="let user of users" [value]="user">{{user?.firstName}}</ng-option>
         </ng-select>
     </div>
-    <div class="flex" *ngIf="skillAssignFormGroup.get('resource')?.valid">
-        <button class="h-16" mat-raised-button (click)="openSkillAssignment()">
+    <div class="flex" *ngIf="selectedUser">
+        <button class="h-16" mat-raised-button (click)="openProjectAssignment()">
             <mat-icon>assignment_turned_in</mat-icon>
             <span class="text-xl">Assign Project</span>
         </button>
-        <button class="ml-1 h-16" mat-raised-button (click)="openSkillAssignmentReport()">
+        <button class="ml-1 h-16" mat-raised-button (click)="openProjectAssignmentReport()">
             <mat-icon>summarize</mat-icon>
             <span class="text-xl">Generate Report</span>
         </button>

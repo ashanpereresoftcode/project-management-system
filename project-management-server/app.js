@@ -15,6 +15,7 @@ const userRoutes = require('./routes/user-route');
 const projectRoute = require('./routes/project-route');
 const skillRoute = require('./routes/skill-route');
 const skillAssignmentRoute = require('./routes/skill-assignment-route');
+const projectAssignmentRoute = require('./routes/project-assignment-route');
 
 const app = express()
 require('dotenv').config({ path: `./env-${process.env.NODE_ENV}.env` })
@@ -35,5 +36,6 @@ app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${
 app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.projectControllerRoute}`, projectRoute);
 app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.skillControllerRoute}`, skillRoute);
 app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.skillAssignmentControllerRoute}`, skillAssignmentRoute);
+app.use(`${environmentConfigs.baseEndpointUrl}${environmentConfigs.apiVersion}${environmentConfigs.projectAssignmentControllerRoute}`, projectAssignmentRoute);
 
 module.exports = app;

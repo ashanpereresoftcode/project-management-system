@@ -19,12 +19,18 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { ProjectManagementComponent } from './project-management.component';
 import { ViewProjectsComponent } from './view-projects/view-projects.component';
 import { CreateProjectComponent } from './create-project/create-project.component';
 import { ProjectRoutingModule } from './project-management.routing';
 import { ProjectActionCellRedererComponent } from './project-action-cell-rederer/project-action-cell-rederer.component';
+import { AssignProjectComponent } from './assign-project/assign-project.component';
+import { AssignProjectDialogComponent } from './assign-project/assign-project-dialog/assign-project-dialog.component';
+import { ProjectNameComponent } from './assign-project/cell-renderers/project-name/project-name.component';
+import { ProjectCodeComponent } from './assign-project/cell-renderers/project-code/project-code.component';
+import { ProjectAllocationComponent } from './assign-project/cell-renderers/project-allocation/project-allocation.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +38,11 @@ import { ProjectActionCellRedererComponent } from './project-action-cell-rederer
     ViewProjectsComponent,
     CreateProjectComponent,
     ProjectActionCellRedererComponent,
+    AssignProjectComponent,
+    AssignProjectDialogComponent,
+    ProjectNameComponent,
+    ProjectCodeComponent,
+    ProjectAllocationComponent,
   ],
   imports: [
     CommonModule,
@@ -56,6 +67,7 @@ import { ProjectActionCellRedererComponent } from './project-action-cell-rederer
     ]),
     FormsModule,
     ReactiveFormsModule,
+    NgSelectModule
   ]
 })
 

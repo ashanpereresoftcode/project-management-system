@@ -64,6 +64,16 @@ exports.getUserDetails = async () => {
         model: "Skill",
       },
     })
+    .populate({
+      path: "assignedProjects",
+      model: "AssignedProjects",
+      match: { isActive: true },
+      populate: {
+        path: "project",
+        match: { isActive: true },
+        model: "Project",
+      },
+    })
     .sort({ createdOn: 'descending' })
     .select("-password -passwordSalt");
 };
@@ -110,6 +120,16 @@ exports.getUserDetail = async (userId) => {
         model: "Skill",
       },
     })
+    .populate({
+      path: "assignedProjects",
+      model: "AssignedProjects",
+      match: { isActive: true },
+      populate: {
+        path: "project",
+        match: { isActive: true },
+        model: "Project",
+      },
+    })
     .select("-password -passwordSalt -__v");
 };
 
@@ -148,6 +168,7 @@ exports.updateUser = async (user) => {
     currentUser.modifiedBy = details.user;
     currentUser.designation = user.designation;
     currentUser.assignedSkills = user.assignedSkills;
+    currentUser.assignedProjects = user.assignedProjects;
     currentUser.projects = user.projects;
     currentUser.modifiedOn = new Date();
     currentUser.isActive = user.isActive;
