@@ -32,6 +32,7 @@ import { ProjectNameComponent } from './assign-project/cell-renderers/project-na
 import { ProjectCodeComponent } from './assign-project/cell-renderers/project-code/project-code.component';
 import { ProjectAllocationComponent } from './assign-project/cell-renderers/project-allocation/project-allocation.component';
 import { AssignProjectActionComponent } from './assign-project/cell-renderers/assign-project-action/assign-project-action.component';
+import { AssignedProjectsReportComponent } from './assign-project/assigned-projects-report/assigned-projects-report.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { AssignProjectActionComponent } from './assign-project/cell-renderers/as
     ProjectCodeComponent,
     ProjectAllocationComponent,
     AssignProjectActionComponent,
+    AssignedProjectsReportComponent,
   ],
   imports: [
     CommonModule,

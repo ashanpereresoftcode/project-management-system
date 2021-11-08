@@ -8,6 +8,7 @@ import { ProjectCodeComponent } from './cell-renderers/project-code/project-code
 import { ProjectAllocationComponent } from './cell-renderers/project-allocation/project-allocation.component';
 import { ProjectNameComponent } from './cell-renderers/project-name/project-name.component';
 import { AssignProjectActionComponent } from './cell-renderers/assign-project-action/assign-project-action.component';
+import { AssignedProjectsReportComponent } from './assigned-projects-report/assigned-projects-report.component';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -129,7 +130,13 @@ export class AssignProjectComponent implements OnInit, OnDestroy {
     )
   }
 
-  openProjectAssignmentReport = () => { }
+  openProjectAssignmentReport = () => {
+    this.matDialog.open(AssignedProjectsReportComponent, {
+      width: '60%',
+      height: 'auto',
+      data: { user: this.selectedUser }
+    });
+  }
 
   ngOnDestroy() {
     if (this.subscriptions && this.subscriptions.length > 0) {
