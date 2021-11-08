@@ -11,7 +11,7 @@ exports.saveDetails = async (assignmentDetails) => {
     if (assignmentDetails && assignmentDetails.length > 0) {
 
         assignmentDetails.forEach(project => {
-            project.assignedUniqueId = uuidv4();
+            project.projectAssignUniqueId = uuidv4();
             project.isActive = true;
             project.createdOn = new Date();
             project.createdBy = headerDetails.user;
@@ -127,7 +127,7 @@ exports.updateAssignedProject = async (projectAssignment) => {
     projectAssignment.modifiedOn = new Date();
 
     const options = { upsert: true };
-    const filter = { assignedUniqueId: projectAssignment.assignedUniqueId };
+    const filter = { projectAssignUniqueId: projectAssignment.projectAssignUniqueId };
     const updateDoc = {
         $set: { ...projectAssignment },
     };
@@ -172,7 +172,7 @@ exports.deleteDetails = async (payload, userId) => {
     user['assignedProjects'] = filteredArray;
     await userRepo.updateUser(user);
     const deletedRes = await projectAssignmentModel.deleteMany(query);
-    
+
     if (deletedRes) {
         return true;
     } else {

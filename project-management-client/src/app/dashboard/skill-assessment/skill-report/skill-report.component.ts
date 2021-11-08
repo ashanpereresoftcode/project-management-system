@@ -70,10 +70,7 @@ export class SkillReportComponent implements OnInit {
   }
 
   generatePdf = () => {
-
     // this.blockUI.start('Exporting Pdf...');
-    console.log(this.user);
-    console.log(this.rowData);
     const pdfData: any[] = this.rowData.map(x => {
       return {
         'Skill': x?.skill?.skillName,

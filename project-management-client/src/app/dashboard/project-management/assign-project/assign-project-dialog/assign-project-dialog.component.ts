@@ -14,6 +14,7 @@ import { ProjectAllocation } from '../../../../shared/enums/project-allocation.e
 export class AssignProjectDialogComponent implements OnInit {
 
   @Output() afterSave: EventEmitter<any> = new EventEmitter<any>();
+  @Output() afterUpdate: EventEmitter<any> = new EventEmitter<any>();
 
   @BlockUI() blockUI!: NgBlockUI;
 
@@ -21,6 +22,7 @@ export class AssignProjectDialogComponent implements OnInit {
   assignedProjectFormGroup!: FormGroup;
   projectAllocation = ProjectAllocation;
   selectedUser: any;
+  existingAssignedProject: any;
 
   constructor(
     private projectManagementService: ProjectManagementService,
@@ -31,8 +33,8 @@ export class AssignProjectDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.initilizeFormGroup();
-    this.fetchProjects();
     this.setDialogData();
+    this.fetchProjects();
   }
 
   initilizeFormGroup = () => {
@@ -47,12 +49,20 @@ export class AssignProjectDialogComponent implements OnInit {
     this.blockUI.start('Fetching ......');
     this.projectManagementService.getAllProjects().subscribe(projectData => {
       if (projectData && projectData.validity) {
-        this.projectDetails = projectData.result;
+
+        if (this.existingAssignedProject) {
+          this.projectDetails = projectData?.result;
+        } else if (this.selectedUser?.assignedProjects) {
+          const assignedProjects = this.selectedUser?.assignedProjects.map((x: any) => x.project);
+          this.projectDetails = projectData?.result?.filter(function (leftElement: any) {
+            return assignedProjects?.filter(function (rightElement: any) {
+              return rightElement.projectId == leftElement.projectId;
+            }).length == 0
+          });
+        }
+        this.patchForm();
       }
-      const tempTimeOut = setTimeout(() => {
-        this.blockUI.stop();
-        clearTimeout(tempTimeOut)
-      }, 200);
+      this.blockUI.stop();
     }, error => {
       console.log(error);
       this.blockUI.stop();
@@ -61,36 +71,79 @@ export class AssignProjectDialogComponent implements OnInit {
 
   setDialogData = () => {
     this.selectedUser = this.data?.user;
+    this.existingAssignedProject = this.data?.assignedProject;
+  }
+
+  patchForm = () => {
+    const existingProject = this.data?.assignedProject;
+    if (existingProject) {
+      const patchPayload = {
+        project: this.projectDetails.find(x => x._id === existingProject?.project._id),
+        userId: existingProject?.userId,
+        projectAllocation: existingProject?.projectAllocation,
+        comments: existingProject?.comments,
+      }
+      this.assignedProjectFormGroup.patchValue(patchPayload);
+    }
   }
 
   onProjectAssign = () => {
-    console.log(this.assignedProjectFormGroup.value);
-
+    this.blockUI.start('Processing .......');
     if (this.assignedProjectFormGroup.valid) {
-      const payload = {
-        project: (this.assignedProjectFormGroup.get('project')?.value)._id,
-        userId: this.selectedUser?.userId,
-        projectAllocation: this.assignedProjectFormGroup.get('projectAllocation')?.value,
-        comments: this.assignedProjectFormGroup.get('comments')?.value
+
+      if (this.existingAssignedProject) {
+
+        if (this.checkAlreadyProjectAssigned()) {
+          this.toastrService.error("Selected project already being assigned for this user.", "Error");
+          this.blockUI.stop();
+        } else {
+          this.existingAssignedProject.project = (this.assignedProjectFormGroup.get('project')?.value)._id;
+          this.existingAssignedProject.userId = this.selectedUser?.userId;
+          this.existingAssignedProject.projectAllocation = this.assignedProjectFormGroup.get('projectAllocation')?.value;
+          this.existingAssignedProject.comments = this.assignedProjectFormGroup.get('comments')?.value;
+
+          this.projectManagementService.updateAssignedProject(this.existingAssignedProject).subscribe(udpatedResult => {
+            if (udpatedResult) {
+              this.existingAssignedProject['project'] = this.assignedProjectFormGroup.get('project')?.value;
+              this.afterUpdate.emit(this.existingAssignedProject);
+              this.closeModal();
+            }
+            this.blockUI.stop();
+          }, error => {
+            this.blockUI.stop();
+          })
+        }
+      } else {
+        const payload = {
+          project: (this.assignedProjectFormGroup.get('project')?.value)._id,
+          userId: this.selectedUser?.userId,
+          projectAllocation: this.assignedProjectFormGroup.get('projectAllocation')?.value,
+          comments: this.assignedProjectFormGroup.get('comments')?.value
+        }
+
+        this.projectManagementService.assignProject(payload).subscribe(assignedResult => {
+          if (assignedResult) {
+            assignedResult['project'] = this.assignedProjectFormGroup.get('project')?.value;
+            this.afterSave.emit(assignedResult);
+            this.closeModal();
+          }
+          this.blockUI.stop();
+        }, error => {
+          console.log(error);
+          this.blockUI.stop();
+        })
       }
-
-      this.projectManagementService.assignProject(payload).subscribe(assignedResult => {
-        debugger
-      }, error => {
-        console.log(error);
-      })
-
-
     } else {
       this.toastrService.error('Please check the form again', 'Error');
+      this.blockUI.stop();
     }
+  }
 
-    // const assignedProject = {
-    //   project: payload.project,
-    //   userId: payload.userId,
-    //   projectAllocation: payload.projectAllocation,
-    //   comments: payload.comments,
-    // }
+
+  checkAlreadyProjectAssigned = (): boolean => {
+    const assignedProjects = this.selectedUser?.assignedProjects.map((x: any) => x.project);
+    const project = this.assignedProjectFormGroup?.get('project')?.value;
+    return assignedProjects.some((x: any) => x.projectId === project.projectId);
   }
 
   closeModal = () => {

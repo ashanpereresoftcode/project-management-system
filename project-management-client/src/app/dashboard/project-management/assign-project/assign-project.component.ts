@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { MatDialog } from '@angular/material/dialog';
 import { ColDef, GridApi, GridOptions } from "ag-grid-community";
-import { AuthService } from '../../../shared/services';
+import { AuthService, ProjectManagementService } from '../../../shared/services';
 import { AssignProjectDialogComponent } from './assign-project-dialog/assign-project-dialog.component';
 import { ProjectCodeComponent } from './cell-renderers/project-code/project-code.component';
 import { ProjectAllocationComponent } from './cell-renderers/project-allocation/project-allocation.component';
 import { ProjectNameComponent } from './cell-renderers/project-name/project-name.component';
+import { AssignProjectActionComponent } from './cell-renderers/assign-project-action/assign-project-action.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-assign-project',
   templateUrl: './assign-project.component.html',
   styleUrls: ['./assign-project.component.scss']
 })
-export class AssignProjectComponent implements OnInit {
+export class AssignProjectComponent implements OnInit, OnDestroy {
   @BlockUI() blockUI!: NgBlockUI;
 
   projectDetails: any[] = [];
@@ -27,10 +29,12 @@ export class AssignProjectComponent implements OnInit {
   gridOption!: GridOptions;
   users: any[] = [];
   selectedUser: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private matDialog: MatDialog,
-    private authService: AuthService
+    private authService: AuthService,
+    private projectManagementService: ProjectManagementService
   ) {
     this.columnDefs = [
       {
@@ -57,12 +61,18 @@ export class AssignProjectComponent implements OnInit {
         suppressAutoSize: true,
         width: 120,
       },
+      {
+        headerName: 'Actions',
+        width: 100,
+        cellRendererFramework: AssignProjectActionComponent
+      }
     ];
     this.defaultColDef = { resizable: true };
   }
 
   ngOnInit(): void {
     this.fetchUsers();
+    this.assignedSkillDeletion();
   }
 
   fetchUsers = () => {
@@ -76,6 +86,17 @@ export class AssignProjectComponent implements OnInit {
     })
   }
 
+  assignedSkillDeletion = () => {
+    this.subscriptions.push(this.projectManagementService.afterAssignedProjectDelete.subscribe(res => {
+      if (res) {
+        const assignedProjects = this.selectedUser.assignedProjects.filter((s: any) => s?._id !== res?.deletedId[0]);
+        this.selectedUser.assignedProjects = [...assignedProjects];
+        this.rowData = this.selectedUser.assignedProjects;
+        this.gridApi.setRowData(this.rowData);
+      }
+    }))
+  }
+
   onGridReady = (params: any) => {
     this.gridApi = params?.api;
     this.gridColumnApi = params?.columnApi;
@@ -87,29 +108,35 @@ export class AssignProjectComponent implements OnInit {
   }
 
   onResourceSelection = () => {
-    this.rowData = this.selectedUser.assignedProjects;
+    this.rowData = this.selectedUser?.assignedProjects;
+    this.projectManagementService.userInformation = this.selectedUser;
   }
 
   openProjectAssignment = () => {
-    this.matDialog.open(AssignProjectDialogComponent, {
+    const projectAssignDialog = this.matDialog.open(AssignProjectDialogComponent, {
       width: '60%',
       height: 'auto',
       data: { user: this.selectedUser }
     });
 
-    // TODO: 
-    // skillAssignmentRef.componentInstance.afterSkillAssignment.subscribe((res: any) => {
-    //   if (res) {
-    //     const assignmentDetail = res?.result?.assignmentDetail;
-    //     assignmentDetail.skill = res?.assignedSkill?.skill;
-    //     this.rowData.push(assignmentDetail);
-    //     this.gridApi.setRowData(this.rowData);
-    //     console.log(res);
-    //   }
-    // })
+    this.subscriptions.push(
+      projectAssignDialog.componentInstance.afterSave.subscribe((res: any) => {
+        const assignmentDetail = res?.result?.assignmentDetail;
+        assignmentDetail.project = res?.project;
+        this.rowData.push(assignmentDetail);
+        this.gridApi.setRowData(this.rowData);
+      })
+    )
   }
 
   openProjectAssignmentReport = () => { }
 
+  ngOnDestroy() {
+    if (this.subscriptions && this.subscriptions.length > 0) {
+      this.subscriptions.forEach(s => {
+        s.unsubscribe();
+      })
+    }
+  }
 
 }
