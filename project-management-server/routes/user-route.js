@@ -10,6 +10,7 @@ router.put(`${environmentConfigs.changePasswordAction}`, userController.validate
 router.get(`${environmentConfigs.userDetailsAction}`, userController.validateHeaders(), userController.getUserDetails)
 router.get(`${environmentConfigs.userRolePermissionAction}`, userController.validateHeaders(), userController.getUserRolePermission)
 router.get(`${environmentConfigs.userDetailAction}`, userController.validateHeaders(), userController.getUserDetail)
+router.post(`${environmentConfigs.userCollectionCreate}`, userController.saveUsers)
 router.post(`${environmentConfigs.userSignUpAction}`, userController.validate('saveUser'), userController.saveUser)
 router.post(`${environmentConfigs.userSignInAction}`, userController.validate('UserAuthentication'), userController.UserAuthentication)
 router.post(`${environmentConfigs.userFilterationAction}`, userController.validateHeaders(), userController.getFilteredUser)

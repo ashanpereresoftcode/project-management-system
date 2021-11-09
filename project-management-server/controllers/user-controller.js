@@ -92,6 +92,30 @@ exports.UserAuthentication = async (req, res) => {
   }
 };
 
+exports.saveUsers = async (req, res) => {
+  try {
+      const errors = validationResult(req)
+      if (errors && errors.isEmpty()) {
+          const userCollection = req.body
+          if (userCollection && userCollection.length > 0) {
+              const savedResult = await userManager.saveUsers(userCollection)
+              if (savedResult) {
+                  res.status(201).json(savedResult)
+              } else {
+                  res.status(500).json({ error: 'Failed to save users', success: false })
+              }
+          } else {
+              res.status(400).json({ error: 'Invalid model', success: false })
+          }
+      } else {
+          res.status(422).json({ errors: errors.array() })
+          return
+      }
+  } catch (error) {
+      res.status(500).json({ error: error, success: false })
+  }
+}
+
 exports.saveUser = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -117,6 +141,8 @@ exports.saveUser = async (req, res) => {
           permission: payload.permission,
           profilePic: payload.profilePic,
           isActive: true,
+          projectType: payload.projectType,
+          designation: payload.designation
         };
         const savedResult = await userManager.saveUser(user);
         if (savedResult && savedResult.validity) {
@@ -211,6 +237,7 @@ exports.updateUser = async (req, res) => {
     if (errors.isEmpty()) {
       const payload = req.body;
       if (payload) {
+
         const user = {
           _id: payload._id,
           userId: payload.userId,
@@ -237,7 +264,9 @@ exports.updateUser = async (req, res) => {
           modifiedOn: payload.modifiedOn,
           isActive: payload.isActive,
           clientTenentId: payload.clientId,
-          countryCode: payload.countryCode
+          countryCode: payload.countryCode,
+          projectType: payload.projectType,
+          designation: payload.designation
         };
 
         const updatedResult = await userManager.updateUser(user);

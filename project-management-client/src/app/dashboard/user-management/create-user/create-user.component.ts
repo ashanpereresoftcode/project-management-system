@@ -17,11 +17,22 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   sampleCover = "A highly versatile, passionate and driven Talent / HR Manager, Recruitment Specialist and HR generalist with 13 years’ experience working in high volume teams across Education, Aged Care, Insurance, Customer Service, Retail, Health and IT industries. A finalist in the Bupa Global People Leader of the year awards I am known for creating a collaborative,"
 
   userSubscriptions: Subscription[] = [];
+  uploadedImage: any = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVamKPfw0_YElX1zi2NykJl0Ee3zc2wi22fA&usqp=CAU";
 
   projectStatus: any[] = [
     { value: 'active', viewValue: 'active' },
     { value: 'in-active', viewValue: 'in-active' },
     { value: 'done', viewValue: 'Done' }
+  ];
+
+  designations: any[] = [
+    { key: 'ASE', viewValue: 'Associate Software Engineer' },
+    { key: 'SE', viewValue: 'Software Engineer' },
+    { key: 'SSE', viewValue: 'Senior Software Engineer' },
+    { key: 'ATL', viewValue: 'Associate Technical Lead' },
+    { key: 'TL', viewValue: 'Technical Lead' },
+    { key: 'AT', viewValue: 'Architecht' },
+    { key: 'PM', viewValue: 'Project Manager' },
   ];
 
   constructor(
@@ -34,6 +45,8 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     this.initializeForm();
     if (this.data) {
       this.user = this.data.user;
+      this.uploadedImage = this.user?.profilePic ? this.user?.profilePic : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVamKPfw0_YElX1zi2NykJl0Ee3zc2wi22fA&usqp=CAU";
+
       this.patchUserForm();
     } else {
       this.userForm.get('password')?.setValidators(Validators.required);
@@ -54,8 +67,9 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       passportId: new FormControl(null),
       roles: new FormControl(null),
       profilePic: new FormControl(null),
-      designation: new FormControl(null),
       skills: new FormControl(null),
+      projectType: new FormControl(null),
+      designation: new FormControl(null, Validators.required)
     })
   }
 
@@ -88,7 +102,9 @@ export class CreateUserComponent implements OnInit, OnDestroy {
         this.user.nic = user.nic;
         this.user.passportId = user.passportId;
         this.user.roles = user.roles;
-        this.user.profilePic = user.profilePic;
+        this.user.profilePic = this.uploadedImage;
+        this.user.projectType = user.projectType;
+        this.user.designation = user.designation;
         // add the service call from here
         this.userSubscriptions.push(this.authService.updateUser(this.user).subscribe(serviceResult => {
           if (serviceResult) {
@@ -101,6 +117,10 @@ export class CreateUserComponent implements OnInit, OnDestroy {
           console.log(error);
         }));
       } else {
+
+        user['profilePic'] = this.uploadedImage;
+        debugger
+
         this.userSubscriptions.push(this.authService.saveUser(user).subscribe(serviceResult => {
           if (serviceResult) {
             this.toastrService.success('Successfully saved.', 'Success');
@@ -114,6 +134,15 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     } else {
       this.toastrService.error('Please check the form again.', 'Error');
     }
+  }
+
+  onFileSelected = (event: any) => {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      this.uploadedImage = reader.result;
+    };
   }
 
   ngOnDestroy() {

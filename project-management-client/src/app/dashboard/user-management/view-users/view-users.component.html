@@ -10,10 +10,17 @@
                 <mat-icon class="mr-1">picture_as_pdf</mat-icon>
                 <span class="text-xl">Export To Pdf</span>
             </button>
+            <button class="ml-1" mat-raised-button (click)="fileUpload.click()">
+                <mat-icon class="mr-1">backup</mat-icon>
+                <span class="text-xl">Upload Users</span>
+            </button>
             <button class="ml-1" mat-raised-button (click)="openModal()">
                 <mat-icon class="mr-1">add</mat-icon>
                 <span class="text-xl">Add User</span>
             </button>
+            <input type="file" class="file-input"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                (change)="onFileSelected($event)" #fileUpload>
         </div>
     </div>
 </div>

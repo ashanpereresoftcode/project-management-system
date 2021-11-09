@@ -70,6 +70,18 @@ exports.authenticateUser = async (userRequest) => {
   }
 };
 
+exports.saveUsers = async (user) => {
+  try {
+    const savedUsers = await userRepository.saveUsers(user);
+    return {
+      validity: true,
+      result: savedUsers,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.saveUser = async (user) => {
   try {
     const filterParam = userValidater.validateFilterParamForUser(user);

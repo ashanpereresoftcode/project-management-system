@@ -2,6 +2,10 @@ textarea {
     resize: none !important;
 }
 
+.file-input {
+    display: none;
+}
+
 .profile {
     // // width: 14%;
     // display: flex;
@@ -11,10 +15,14 @@ textarea {
     display: grid;
     grid-template-columns: 10% 90%;
     grid-template-rows: auto;
-    margin-bottom: 1.3rem;
+    margin-bottom: 0.7rem;
 
     &__image {
         grid-column: 1/2;
+        img {
+            height: 8rem !important;
+            border: 1px solid black;
+        }
     }
 
     &__moto {

@@ -42,7 +42,7 @@ export class UserManagementActionCellRendererComponent implements OnInit, OnDest
 
   openModal = () => {
     this.dialog.open(CreateUserComponent, {
-      width: '50%',
+      width: '60%',
       height: 'auto',
       data: { user: this.data }
     });
@@ -76,21 +76,21 @@ export class UserManagementActionCellRendererComponent implements OnInit, OnDest
     }));
   }
 
-  openAssignment = () => {
-    this.dialog.open(SkillAssignmentComponent, {
-      width: '50%',
-      height: 'auto',
-      data: {}
-    })
-  }
+  // openAssignment = () => {
+  //   this.dialog.open(SkillAssignmentComponent, {
+  //     width: '50%',
+  //     height: 'auto',
+  //     data: {}
+  //   })
+  // }
 
-  openProjectAssignment = () => {
-    this.dialog.open(ProjectAssignmentComponent, {
-      width: '50%',
-      height: 'auto',
-      data: {}
-    })
-  }
+  // openProjectAssignment = () => {
+  //   this.dialog.open(ProjectAssignmentComponent, {
+  //     width: '50%',
+  //     height: 'auto',
+  //     data: {}
+  //   })
+  // }
 
   ngOnDestroy() {
     if (this.userSubscriptions && this.userSubscriptions.length > 0) {

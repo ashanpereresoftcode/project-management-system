@@ -26,7 +26,8 @@ const userSchema = mongoose.Schema({
   modifiedOn: { type: Date },
   isActive: { type: Boolean },
   clientTenentId: { type: String },
-  countryCode: { type: String }
+  countryCode: { type: String },
+  projectType: { type: String }
 });
 
 const User = mongoose.model("User", userSchema);

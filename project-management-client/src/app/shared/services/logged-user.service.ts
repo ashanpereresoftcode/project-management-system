@@ -15,6 +15,10 @@ export class LoggedUserService {
     this.userDetails = userDetails;
   }
 
+  getUserDetails = () => {
+    return this.userDetails;
+  }
+
   getUserRoles = (): string[] => {
     let roles: string[] = [];
     if (this.userDetails) {

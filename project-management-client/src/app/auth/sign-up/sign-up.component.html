@@ -26,15 +26,16 @@
             <input matInput placeholder="lastName" formControlName="lastName">
         </mat-form-field>
         <mat-form-field class="flex-1 pl-6" appearance="outline">
-            <mat-label>middleName</mat-label>
-            <input matInput placeholder="middleName" formControlName="middleName">
-        </mat-form-field>
-    </div>
-    <div class="flex">
-        <mat-form-field class="flex-1" appearance="outline">
             <mat-label>User Email</mat-label>
             <input matInput placeholder="User Email" formControlName="userEmail">
             <mat-error *ngIf="userForm?.get('userEmail')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="flex">
+        <mat-form-field class="flex-1" appearance="outline" *ngIf="!user">
+            <mat-label>password</mat-label>
+            <input matInput placeholder="password" formControlName="password">
+            <mat-error *ngIf="userForm?.get('password')?.hasError('required')">This field is required</mat-error>
         </mat-form-field>
         <mat-form-field class="flex-1 pl-6" appearance="outline">
             <mat-label>Contact</mat-label>
@@ -44,23 +45,21 @@
     </div>
     <div class="flex">
         <mat-form-field class="flex-1" appearance="outline">
-            <mat-label>Address</mat-label>
-            <input matInput placeholder="Address" formControlName="userAddress">
+            <mat-label>Project Type</mat-label>
+            <mat-select id="projectType" formControlName="projectType">
+                <mat-option value="integritas">Integritas</mat-option>
+                <mat-option value="non-integritas">Non-Integritas</mat-option>
+            </mat-select>
+            <mat-error *ngIf="userForm?.get('projectType')?.hasError('required')">This field is required</mat-error>
         </mat-form-field>
-        <mat-form-field class="flex-1 pl-6" appearance="outline" *ngIf="!user">
-            <mat-label>password</mat-label>
-            <input matInput placeholder="password" formControlName="password">
-            <mat-error *ngIf="userForm?.get('password')?.hasError('required')">This field is required</mat-error>
-        </mat-form-field>
-    </div>
-    <div class="flex">
-        <mat-form-field class="flex-1" appearance="outline">
-            <mat-label>NIC</mat-label>
-            <input matInput placeholder="NIC" formControlName="nic">
-        </mat-form-field>
+
         <mat-form-field class="flex-1 pl-6" appearance="outline">
-            <mat-label>Passport Id</mat-label>
-            <input matInput placeholder="Address" formControlName="passportId">
+            <mat-label>Designation</mat-label>
+            <mat-select id="designation" formControlName="designation" placeholder="Designation">
+                <mat-option *ngFor="let designation of designations" [value]="designation?.key">
+                    {{designation?.viewValue}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="userForm?.get('designation')?.hasError('required')">This field is required</mat-error>
         </mat-form-field>
     </div>
 </div>

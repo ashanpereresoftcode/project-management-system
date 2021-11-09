@@ -4,13 +4,12 @@
             <perfect-scrollbar>
                 <figure class="p-8">
                     <div class="flex justify-center">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVamKPfw0_YElX1zi2NykJl0Ee3zc2wi22fA&usqp=CAU"
-                            alt="profile" class="rounded-full w-40 h-40">
+                        <img [src]="user.profilePic" alt="profile" class="user-profile rounded-full w-40 h-40">
                     </div>
                     <div class="pt-6 text-center">
                         <blockquote>
-                            <div class="font-bold">Ashan Perera</div>
-                            <div class="font-medium">Senior Software Engineer</div>
+                            <div class="font-bold">{{this.user.firstName}} {{this.user.lastName}}</div>
+                            <div class="font-medium">{{designations[this.user.designation]}}</div>
                             <p class="text-sm font-semibold">
                                 “Tailwind CSS is the only framework that I've seen scale
                                 on large teams.”
@@ -37,7 +36,7 @@
                     <div>
                         <span class="example-spacer"></span>
                         <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon"
-                            matTooltip="Logout">
+                            matTooltip="Logout" (click)="loggOut()">
                             <mat-icon>logout</mat-icon>
                         </button>
                     </div>

@@ -41,6 +41,12 @@ export class AuthService {
     return this.http.post(url, userData)
   }
 
+  saveUsers(userDataSet: any[]): Observable<any> {
+    const url: string = `${this.baseUrl}/api/v1/user/create-users`;
+    return this.http.post(url, userDataSet)
+  }
+
+
   resetPassword(userData: changePasswordModel): Observable<any> {
     const url: string = `${this.baseUrl}/api/v1/user/user-manager/change-password`;
     return this.http.post(url, userData)

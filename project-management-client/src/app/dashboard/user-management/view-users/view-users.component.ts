@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import * as moment from 'moment';
-
+import * as XLSX from 'xlsx';
 import { CreateUserComponent } from '../create-user/create-user.component';
 import { AuthService, FileService } from '../../../shared/services';
 import { UserManagementActionCellRendererComponent } from '../cell-renderers/user-management-action-cell-renderer/user-management-action-cell-renderer.component';
@@ -26,6 +26,8 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
   rowData: any[] = [];
   gridOption!: GridOptions;
   userSubscriptions: Subscription[] = [];
+
+  uploadedDataSet: any[] = [];
 
   constructor(
     public dialog: MatDialog,
@@ -126,23 +128,23 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
     this.fileService.exportAsExcelFile(this.rowData, 'sci-users');
   }
 
-  exportDataToPdf = () => { 
+  exportDataToPdf = () => {
     this.blockUI.start('Exporting Pdf...');
-      const userList: any[] = this.rowData.map(x => {
-        return {
-          firstName: x.firstName.toLowerCase(),
-          lastName: x.lastName.toLowerCase(),
-          userEmail: x.userEmail.toLowerCase(),
-          contact: x.contact.toLowerCase(),
-          passportId: x.passportId ? x.passportId : '-',
-          middleName: x.middleName ? x.middleName : '-',
-          createdOn: moment(x.createdOn).format('YYYY-MM-DD'),
-          modifiedOn: x.modifiedOn ? moment(x.modifiedOn).format('YYYY-MM-DD') : "-"
-        }
-      });
-      const headers: any[] = ['firstName', 'lastName', 'userEmail', 'contact', 'passportId', 'middleName', 'createdOn', 'modifiedOn'];
-      this.fileService.exportToPDF("sci-user-report", headers, userList, "user-list");
-      this.blockUI.stop();
+    const userList: any[] = this.rowData.map(x => {
+      return {
+        firstName: x.firstName.toLowerCase(),
+        lastName: x.lastName.toLowerCase(),
+        userEmail: x.userEmail.toLowerCase(),
+        contact: x.contact.toLowerCase(),
+        passportId: x.passportId ? x.passportId : '-',
+        middleName: x.middleName ? x.middleName : '-',
+        createdOn: moment(x.createdOn).format('YYYY-MM-DD'),
+        modifiedOn: x.modifiedOn ? moment(x.modifiedOn).format('YYYY-MM-DD') : "-"
+      }
+    });
+    const headers: any[] = ['firstName', 'lastName', 'userEmail', 'contact', 'passportId', 'middleName', 'createdOn', 'modifiedOn'];
+    this.fileService.exportToPDF("sci-user-report", headers, userList, "user-list");
+    this.blockUI.stop();
   }
 
   sizeToFit = () => {
@@ -153,6 +155,47 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     this.sizeToFit();
+  }
+
+  onFileSelected = (event: any) => {
+    // let file = event.target.files[0];
+    // let reader = new FileReader();
+    // reader.readAsDataURL(file);
+    // reader.onload = () => {
+    //   this.uploadedDataSet = reader.result;
+    //   console.log(reader.result);
+    // };
+
+
+
+    /* wire up file reader */
+    const target: DataTransfer = <DataTransfer>(event.target);
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    }
+    const reader: FileReader = new FileReader();
+    reader.readAsBinaryString(target.files[0]);
+    reader.onload = (e: any) => {
+      /* create workbook */
+      const binarystr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
+
+      /* selected the first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+      /* save data */
+      const userData = XLSX.utils.sheet_to_json(ws); // to get 2d array pass 2nd parameter as object {header: 1}
+
+      this.authService.saveUsers(userData).subscribe(serviceResult => {
+        if (serviceResult) {
+          this.loadUsers();
+        }
+      }, error => {
+        console.log(error);
+      })
+      // service call.
+    };
   }
 
   ngOnDestroy = () => {

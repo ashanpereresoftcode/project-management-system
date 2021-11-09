@@ -9,6 +9,33 @@ require("dotenv/config");
 
 const environmentConfigs = process.env;
 
+
+exports.saveUsers = async (userList) => {
+  const details = headerReader.getHeaderDetails();
+
+  let savingUserList = [];
+
+  for (let index = 0; index < userList.length; index++) {
+    const existsUsers = await this.isExists({ userName: userList[index].userName, userEmail: userList[index].userEmail });
+    if (!existsUsers) {
+      userList[index].userId = uuidv4();
+      userList[index].isActive = true;
+      userList[index].createdBy = details && details.user ? details.user : 0;
+      userList[index].createdOn = new Date();
+      userList[index].modifiedBy = "";
+      userList[index].modifiedOn = null;
+      userList[index].clientTenentId = details.clientId;
+      userList[index].countryCode = details.countryCode;
+      savingUserList.push(userList[index]);
+    }
+  }
+
+  if (savingUserList && savingUserList.length > 0) {
+    return await userModel.insertMany(savingUserList);
+  }
+  return null;
+}
+
 exports.saveUser = async (user) => {
   let createdResult = null;
 
@@ -83,7 +110,6 @@ exports.isExists = async (filterParams) => {
     $or: [
       { userName: filterParams.userName },
       { userEmail: filterParams.userEmail },
-      { nic: filterParams.nic },
     ],
   };
   return await userModel.exists(query);
@@ -180,6 +206,7 @@ exports.updateUser = async (user) => {
     currentUser.nic = user.nic;
     currentUser.passportId = user.passportId;
     currentUser.roles = user.roles;
+    currentUser.projectType = user.projectType;
 
     const updateDoc = {
       $set: {

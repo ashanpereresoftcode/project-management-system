@@ -4,38 +4,32 @@
         <mat-icon>close</mat-icon>
     </button>
 </div>
-
-<!-- <perfect-scrollbar>
-</perfect-scrollbar> -->
 <div class="overflow-auto pt-4" [formGroup]="userForm">
-
     <figure>
         <div class="profile">
             <div class="profile__image flex flex-col justify-start">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVamKPfw0_YElX1zi2NykJl0Ee3zc2wi22fA&usqp=CAU"
-                    alt="profile" class="rounded-full w-40 h-40">
-                <button mat-stroked-button class="mt-1 text-center" color="primary">Upload</button>
+                <img [src]="uploadedImage"
+                    alt="profile" class="rounded-full w-40">
+                <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+                <div class="file-upload">
+                    <button mat-stroked-button class="mt-1 text-center" color="primary" (click)="fileUpload.click()">Upload</button>
+                </div>
             </div>
             <div class="profile__moto">
-                <mat-form-field appearance="outline">
-                    <mat-label>User Profile Cover</mat-label>
-                    <textarea matInput rows="7" [value]="sampleCover"></textarea>
+                <mat-form-field class="flex-1" appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput placeholder="First Name" formControlName="firstName">
+                    <mat-error *ngIf="userForm?.get('firstName')?.hasError('required')">This field is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="flex-1" appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput placeholder="Last Name" formControlName="lastName">
                 </mat-form-field>
             </div>
         </div>
-        <!-- <div class="pt-6 text-center">
-            <blockquote>
-                <div class="font-bold">Ashan Perera</div>
-                <div class="font-medium">Senior Software Engineer</div>
-                <p class="text-sm font-semibold">
-                    “Tailwind CSS is the only framework that I've seen scale
-                    on large teams.”
-                </p>
-            </blockquote>
-        </div> -->
     </figure>
-
-    <div class="flex w-full">
+    <div class="flex">
         <mat-form-field class="flex-1" appearance="outline">
             <mat-label>User Name</mat-label>
             <input matInput placeholder="User Name" formControlName="userName">
@@ -43,47 +37,14 @@
             </mat-error>
         </mat-form-field>
         <mat-form-field class="flex-1 pl-6" appearance="outline">
-            <mat-label>First Name</mat-label>
-            <input matInput placeholder="First Name" formControlName="firstName">
-            <mat-error *ngIf="userForm?.get('firstName')?.hasError('required')">This field is required
-            </mat-error>
-        </mat-form-field>
-    </div>
-
-    <div class="flex">
-        <mat-form-field class="flex-1" appearance="outline">
-            <mat-label>lastName</mat-label>
-            <input matInput placeholder="lastName" formControlName="lastName">
-        </mat-form-field>
-        <!-- <mat-form-field class="flex-1 pl-6" appearance="outline">
-            <mat-label>middleName</mat-label>
-            <input matInput placeholder="middleName" formControlName="middleName">
-        </mat-form-field> -->
-        <mat-form-field class="flex-1 pl-6" appearance="outline">
             <mat-label>User Email</mat-label>
             <input matInput placeholder="User Email" formControlName="userEmail">
             <mat-error *ngIf="userForm?.get('userEmail')?.hasError('required')">This field is required
             </mat-error>
         </mat-form-field>
-
-        <!-- <mat-form-field class="flex-1 pl-6" appearance="outline">
-                <mat-label>Project Status</mat-label>
-                <mat-select placeholder="Project Status" formControlName="projectStatus">
-                    <mat-option *ngFor="let status of projectStatus" [value]="status.value">
-                        {{status.viewValue}}
-                    </mat-option>
-                </mat-select>
-                <mat-error *ngIf="userForm?.get('projectStatus')?.hasError('required')">This field is required
-                </mat-error>
-            </mat-form-field> -->
     </div>
 
     <div class="flex">
-        <!-- <mat-form-field class="flex-1" appearance="outline">
-            <mat-label>User Email</mat-label>
-            <input matInput placeholder="User Email" formControlName="userEmail">
-            <mat-error *ngIf="userForm?.get('userEmail')?.hasError('required')">This field is required</mat-error>
-        </mat-form-field> -->
         <mat-form-field class="flex-1" appearance="outline">
             <mat-label>Contact</mat-label>
             <input matInput placeholder="Contact" formControlName="contact">
@@ -95,22 +56,26 @@
             <mat-error *ngIf="userForm?.get('password')?.hasError('required')">This field is required</mat-error>
         </mat-form-field>
     </div>
+
     <div class="flex">
         <mat-form-field class="flex-1" appearance="outline">
-            <mat-label>Address</mat-label>
-            <input matInput placeholder="Address" formControlName="userAddress">
+            <mat-label>Project Type</mat-label>
+            <mat-select id="projectType" formControlName="projectType">
+                <mat-option value="integritas">Integritas</mat-option>
+                <mat-option value="non-integritas">Non-Integritas</mat-option>
+            </mat-select>
+            <mat-error *ngIf="userForm?.get('projectType')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="flex-1 pl-6" appearance="outline">
+            <mat-label>Designation</mat-label>
+            <mat-select id="designation" formControlName="designation" placeholder="Designation">
+                <mat-option *ngFor="let designation of designations" [value]="designation?.key">
+                    {{designation?.viewValue}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="userForm?.get('designation')?.hasError('required')">This field is required</mat-error>
         </mat-form-field>
     </div>
-    <!-- <div class="flex">
-        <mat-form-field class="flex-1" appearance="outline">
-            <mat-label>NIC</mat-label>
-            <input matInput placeholder="NIC" formControlName="nic">
-        </mat-form-field>
-        <mat-form-field class="flex-1 pl-6" appearance="outline">
-            <mat-label>Passport Id</mat-label>
-            <input matInput placeholder="Address" formControlName="passportId">
-        </mat-form-field>
-    </div> -->
 </div>
 
 <div class="flex justify-end">

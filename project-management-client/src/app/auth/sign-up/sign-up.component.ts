@@ -13,6 +13,18 @@ export class SignUpComponent implements OnInit {
   @Input() user!: any;
   userForm!: FormGroup;
 
+
+  designations: any[] = [
+    { key: 'ASE', viewValue: 'Associate Software Engineer' },
+    { key: 'SE', viewValue: 'Software Engineer' },
+    { key: 'SSE', viewValue: 'Senior Software Engineer' },
+    { key: 'ATL', viewValue: 'Associate Technical Lead' },
+    { key: 'TL', viewValue: 'Technical Lead' },
+    { key: 'AT', viewValue: 'Architecht' },
+    { key: 'PM', viewValue: 'Project Manager' },
+  ];
+
+
   constructor(
     public matDialogRef: MatDialogRef<SignUpComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -43,8 +55,9 @@ export class SignUpComponent implements OnInit {
       passportId: new FormControl(null),
       roles: new FormControl(null),
       profilePic: new FormControl(null),
-      designation: new FormControl(null),
       skills: new FormControl(null),
+      projectType: new FormControl(null),
+      designation: new FormControl(null, Validators.required)
     })
   }
 
