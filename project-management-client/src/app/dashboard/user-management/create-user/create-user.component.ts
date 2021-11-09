@@ -14,6 +14,8 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   @Input() user!: any;
   userForm!: FormGroup;
 
+  sampleCover = "A highly versatile, passionate and driven Talent / HR Manager, Recruitment Specialist and HR generalist with 13 years’ experience working in high volume teams across Education, Aged Care, Insurance, Customer Service, Retail, Health and IT industries. A finalist in the Bupa Global People Leader of the year awards I am known for creating a collaborative,"
+
   userSubscriptions: Subscription[] = [];
 
   projectStatus: any[] = [
