@@ -14,22 +14,22 @@ exports.validateHeaders = () => {
 
 exports.validate = (method) => {
   switch (method) {
-    case "saveUser": {
-      return [
-        body("userName", "user name is required.").exists().notEmpty(),
-        body("userEmail", "user email is required.").exists().notEmpty(),
-        body("firstName", "firstName is required.").exists().notEmpty(),
-        body("lastName", "lastName is required.").exists().notEmpty(),
-        body("password", "user password is required.").exists().notEmpty(),
-      ];
-    }
-    case "updateUser":
-      return [
-        body("userName", "user name is required.").exists().notEmpty(),
-        body("userEmail", "user email is required.").exists().notEmpty(),
-        body("firstName", "firstName is required.").exists().notEmpty(),
-        body("lastName", "lastName is required.").exists().notEmpty(),
-      ];
+    // case "saveUser": {
+    //   return [
+    //     body("userName", "user name is required.").exists().notEmpty(),
+    //     body("userEmail", "user email is required.").exists().notEmpty(),
+    //     body("firstName", "firstName is required.").exists().notEmpty(),
+    //     body("lastName", "lastName is required.").exists().notEmpty(),
+    //     body("password", "user password is required.").exists().notEmpty(),
+    //   ];
+    // }
+    // case "updateUser":
+    //   return [
+    //     body("userName", "user name is required.").exists().notEmpty(),
+    //     body("userEmail", "user email is required.").exists().notEmpty(),
+    //     body("firstName", "firstName is required.").exists().notEmpty(),
+    //     body("lastName", "lastName is required.").exists().notEmpty(),
+    //   ];
     case "UserAuthentication":
       return [
         body("userNameOrEmail", "user name is required.").exists().notEmpty(),
@@ -121,28 +121,32 @@ exports.saveUser = async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       const payload = req.body;
-      if (payload) {
+
+      const userPayload = JSON.parse(payload.userPayload);
+      const userProfile = payload.profileImage;
+
+      if (userPayload) {
         const user = {
           userId: uuidv4(),
-          userName: payload.userName,
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-          middleName: payload.middleName,
-          designation: payload.designation,
-          projects: payload.projects,
-          assignedSkills: payload.assignedSkills,
-          userEmail: payload.userEmail,
-          password: payload.password,
-          contact: payload.contact,
-          userAddress: payload.userAddress,
-          nic: payload.nic,
-          passportId: payload.passportId,
-          roles: payload.roles,
-          permission: payload.permission,
-          profilePic: payload.profilePic,
+          userName: userPayload.userName,
+          firstName: userPayload.firstName,
+          lastName: userPayload.lastName,
+          middleName: userPayload.middleName,
+          designation: userPayload.designation,
+          projects: userPayload.projects,
+          assignedSkills: userPayload.assignedSkills,
+          userEmail: userPayload.userEmail,
+          password: userPayload.password,
+          contact: userPayload.contact,
+          userAddress: userPayload.userAddress,
+          nic: userPayload.nic,
+          passportId: userPayload.passportId,
+          roles: userPayload.roles,
+          permission: userPayload.permission,
+          profilePic: userProfile,
           isActive: true,
-          projectType: payload.projectType,
-          designation: payload.designation
+          projectType: userPayload.projectType,
+          designation: userPayload.designation
         };
         const savedResult = await userManager.saveUser(user);
         if (savedResult && savedResult.validity) {

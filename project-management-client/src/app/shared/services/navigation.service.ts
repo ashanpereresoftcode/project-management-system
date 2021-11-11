@@ -29,12 +29,6 @@ export class NavigationService {
           route: '/dashboard/project-management/view-projects',
           children: [],
         },
-        {
-          displayName: 'Assign Projects',
-          iconName: 'subdirectory_arrow_rightz',
-          route: '/dashboard/project-management/assign-project',
-          children: [],
-        }
       ]
     },
     {
@@ -45,6 +39,18 @@ export class NavigationService {
           displayName: 'View Skills',
           iconName: 'subdirectory_arrow_rightz',
           route: '/dashboard/skill-assessment/view-assessments',
+          children: []
+        },
+      ]
+    },
+    {
+      displayName: 'Resource Allocation',
+      iconName: 'assignment',
+      children: [
+        {
+          displayName: 'Assign Projects',
+          iconName: 'subdirectory_arrow_rightz',
+          route: '/dashboard/project-management/assign-project',
           children: []
         },
         {

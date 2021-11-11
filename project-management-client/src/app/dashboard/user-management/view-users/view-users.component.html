@@ -27,9 +27,8 @@
 
 <div class="outer-div pt-8">
     <div class="grid-wrapper w-full">
-        <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-material"
-            [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowData]="rowData"
-            (gridReady)="onGridReady($event)">
+        <ag-grid-angular style="height: 450px;" [rowData]="rowData" [ngClass]="'ag-theme-material'"
+            [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" [rowSelection]="'multiple'">
         </ag-grid-angular>
     </div>
 </div>

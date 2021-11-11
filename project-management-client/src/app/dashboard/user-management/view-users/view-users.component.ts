@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ColDef, GridApi, GridOptions } from "ag-grid-community";
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
@@ -26,52 +27,50 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
   rowData: any[] = [];
   gridOption!: GridOptions;
   userSubscriptions: Subscription[] = [];
-
   uploadedDataSet: any[] = [];
 
   constructor(
     public dialog: MatDialog,
     private authService: AuthService,
-    private fileService: FileService) {
+    private fileService: FileService,
+    private toastrService: ToastrService) {
 
     this.columnDefs = [
       {
-        field: 'userName',
-        headerName: 'User Name',
-        suppressAutoSize: true,
-        width: 150
-      },
-      {
         field: 'firstName',
         headerName: 'First Name',
-        suppressAutoSize: true,
-        width: 150
+        width: 120,
+        headerCheckboxSelection: true,
+        headerCheckboxSelectionFilteredOnly: true,
+        checkboxSelection: true,
+        filter: 'agTextColumnFilter'
       },
       {
         field: 'lastName',
         headerName: 'Last Name',
-        suppressAutoSize: true,
-        width: 150
+        width: 120,
+        filter: 'agTextColumnFilter'
       },
       {
         field: 'userEmail',
         headerName: 'Email',
         width: 120,
-        suppressAutoSize: true,
+        filter: 'agTextColumnFilter'
       },
       {
         field: 'contact',
         headerName: 'Contact',
         width: 120,
-        suppressAutoSize: true,
       },
       {
         headerName: 'Actions',
-        width: 100,
+        width: 80,
         cellRendererFramework: UserManagementActionCellRendererComponent
       }
     ];
-    this.defaultColDef = { resizable: true };
+    this.defaultColDef = {
+      resizable: false,
+    };
   }
 
   ngOnInit(): void {
@@ -81,12 +80,15 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
   }
 
   loadUsers = () => {
+    this.blockUI.start('Fetching Users');
     this.userSubscriptions.push(this.authService.fetchUsers().subscribe(serviceResult => {
       if (serviceResult && serviceResult.validity) {
         this.rowData = serviceResult.result;
       }
+      this.blockUI.stop();
     }, error => {
       console.log(error);
+      this.blockUI.stop();
     }));
   }
 
@@ -136,28 +138,34 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
         lastName: x.lastName.toLowerCase(),
         userEmail: x.userEmail.toLowerCase(),
         contact: x.contact.toLowerCase(),
-        passportId: x.passportId ? x.passportId : '-',
-        middleName: x.middleName ? x.middleName : '-',
-        createdOn: moment(x.createdOn).format('YYYY-MM-DD'),
-        modifiedOn: x.modifiedOn ? moment(x.modifiedOn).format('YYYY-MM-DD') : "-"
       }
     });
-    const headers: any[] = ['firstName', 'lastName', 'userEmail', 'contact', 'passportId', 'middleName', 'createdOn', 'modifiedOn'];
+    const headers: any[] = ['firstName', 'lastName', 'userEmail', 'contact'];
     this.fileService.exportToPDF("sci-user-report", headers, userList, "user-list");
     this.blockUI.stop();
-  }
-
-  sizeToFit = () => {
-    this.gridApi.sizeColumnsToFit();
   }
 
   onGridReady = (params: any) => {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+    // this.autoSizeAll(false);
     this.sizeToFit();
   }
 
+  sizeToFit() {
+    this.gridApi.sizeColumnsToFit();
+  }
+
+  autoSizeAll(skipHeader: any) {
+    var allColumnIds: any[] = [];
+    this.gridColumnApi.getAllColumns().forEach(function (column: any) {
+      allColumnIds.push(column.colId);
+    });
+    this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
+  }
+
   onFileSelected = (event: any) => {
+    this.blockUI.start('Processing...');
     // let file = event.target.files[0];
     // let reader = new FileReader();
     // reader.readAsDataURL(file);
@@ -190,9 +198,12 @@ export class ViewUsersComponent implements OnInit, OnDestroy {
       this.authService.saveUsers(userData).subscribe(serviceResult => {
         if (serviceResult) {
           this.loadUsers();
+          this.toastrService.success('Successfully saved', 'Success');
         }
+        this.blockUI.stop();
       }, error => {
         console.log(error);
+        this.blockUI.stop();
       })
       // service call.
     };
