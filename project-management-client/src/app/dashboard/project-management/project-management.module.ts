@@ -18,6 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -33,6 +34,8 @@ import { ProjectCodeComponent } from './assign-project/cell-renderers/project-co
 import { ProjectAllocationComponent } from './assign-project/cell-renderers/project-allocation/project-allocation.component';
 import { AssignProjectActionComponent } from './assign-project/cell-renderers/assign-project-action/assign-project-action.component';
 import { AssignedProjectsReportComponent } from './assign-project/assigned-projects-report/assigned-projects-report.component';
+import { MatNativeDateModule } from '@angular/material/core';
+import { AssigneeCardComponent } from './assign-project/assignee-card/assignee-card.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +50,7 @@ import { AssignedProjectsReportComponent } from './assign-project/assigned-proje
     ProjectAllocationComponent,
     AssignProjectActionComponent,
     AssignedProjectsReportComponent,
+    AssigneeCardComponent,
   ],
   imports: [
     CommonModule,
@@ -71,7 +75,9 @@ import { AssignedProjectsReportComponent } from './assign-project/assigned-proje
     ]),
     FormsModule,
     ReactiveFormsModule,
-    NgSelectModule
+    NgSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ]
 })
 

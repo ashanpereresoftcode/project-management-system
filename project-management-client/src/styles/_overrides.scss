@@ -38,3 +38,15 @@ editor {
 .mat-list-item-content {
     flex: 1 1 100% !important;
 }
+
+.ng-select.ng-select-single .ng-select-container {
+    height: 51px !important;
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-input {
+    font-size: 1.6rem;
+    input {
+        position: relative;
+        top: 1rem;
+    }
+}
