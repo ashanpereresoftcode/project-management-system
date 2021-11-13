@@ -79,7 +79,13 @@ export class SignUpComponent implements OnInit {
 
     if (this.userForm.valid) {
       const user = this.userForm.getRawValue();
-      this.authService.saveUser(user).subscribe(serviceResult => {
+
+      let userForm = new FormData();
+
+      userForm.append("profileImage", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVamKPfw0_YElX1zi2NykJl0Ee3zc2wi22fA&usqp=CAU");
+      userForm.append("userPayload", JSON.stringify(user));
+
+      this.authService.saveUser(userForm).subscribe(serviceResult => {
         if (serviceResult) {
           this.toastrService.success('Successfully saved.', 'Success');
           this.authService.onUserAfterSave.emit(user);

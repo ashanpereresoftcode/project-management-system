@@ -21,6 +21,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 import { ProjectManagementComponent } from './project-management.component';
 import { ViewProjectsComponent } from './view-projects/view-projects.component';
@@ -77,7 +78,10 @@ import { AssigneeCardComponent } from './assign-project/assignee-card/assignee-c
     ReactiveFormsModule,
     NgSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    PerfectScrollbarModule,
+
+    
   ]
 })
 

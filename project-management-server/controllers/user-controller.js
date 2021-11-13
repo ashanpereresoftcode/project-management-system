@@ -14,22 +14,6 @@ exports.validateHeaders = () => {
 
 exports.validate = (method) => {
   switch (method) {
-    // case "saveUser": {
-    //   return [
-    //     body("userName", "user name is required.").exists().notEmpty(),
-    //     body("userEmail", "user email is required.").exists().notEmpty(),
-    //     body("firstName", "firstName is required.").exists().notEmpty(),
-    //     body("lastName", "lastName is required.").exists().notEmpty(),
-    //     body("password", "user password is required.").exists().notEmpty(),
-    //   ];
-    // }
-    // case "updateUser":
-    //   return [
-    //     body("userName", "user name is required.").exists().notEmpty(),
-    //     body("userEmail", "user email is required.").exists().notEmpty(),
-    //     body("firstName", "firstName is required.").exists().notEmpty(),
-    //     body("lastName", "lastName is required.").exists().notEmpty(),
-    //   ];
     case "UserAuthentication":
       return [
         body("userNameOrEmail", "user name is required.").exists().notEmpty(),

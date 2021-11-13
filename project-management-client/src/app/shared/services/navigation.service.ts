@@ -48,13 +48,13 @@ export class NavigationService {
       iconName: 'assignment',
       children: [
         {
-          displayName: 'Assign Projects',
+          displayName: 'Allocate Projects',
           iconName: 'subdirectory_arrow_rightz',
           route: '/dashboard/project-management/assign-project',
           children: []
         },
         {
-          displayName: 'Assign Skills',
+          displayName: 'Allocate Skills',
           iconName: 'subdirectory_arrow_rightz',
           route: '/dashboard/skill-assessment/assign-skills',
           children: []

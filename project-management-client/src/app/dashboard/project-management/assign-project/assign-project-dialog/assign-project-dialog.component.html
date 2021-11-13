@@ -1,6 +1,6 @@
 <div class="pr-6">
     <div class="flex justify-between items-center">
-        <h2>Assign Project</h2>
+        <h2>Allocate Project</h2>
         <button mat-icon-button (click)="closeModal()">
             <mat-icon>close</mat-icon>
         </button>
@@ -70,10 +70,17 @@
                 Add
             </button>
 
-            <button mat-stroked-button class="ml-1"> Clear
+            <button mat-stroked-button class="ml-1">
+                Clear
             </button>
         </div>
         <div class="allocation-wrapper__view">
-            <assignee-card></assignee-card>
+            <perfect-scrollbar>
+                <assignee-card></assignee-card>
+                <assignee-card></assignee-card>
+                <assignee-card></assignee-card>
+                <assignee-card></assignee-card>
+                <assignee-card></assignee-card>
+            </perfect-scrollbar>
         </div>
     </div>

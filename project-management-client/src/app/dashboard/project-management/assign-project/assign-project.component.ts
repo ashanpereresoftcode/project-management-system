@@ -115,7 +115,7 @@ export class AssignProjectComponent implements OnInit, OnDestroy {
 
   openProjectAssignment = () => {
     const projectAssignDialog = this.matDialog.open(AssignProjectDialogComponent, {
-      width: '60%',
+      width: '80%',
       height: 'auto',
       data: { user: this.selectedUser }
     });

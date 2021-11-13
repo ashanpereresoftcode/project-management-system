@@ -4,9 +4,9 @@ textarea {
 
 .allocation-wrapper {
     display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto;
-    grid-gap: 0.5rem;
+    grid-template-columns: 1fr 40%;
+    grid-template-rows: 40rem;
+    grid-gap: 1rem;
 
     &__form {
         grid-column: 1 / 2;
@@ -15,7 +15,9 @@ textarea {
 
     &__view {
         grid-column: 2/-1;
-        grid-row: 1/-1;
+        grid-row: 1/2;
+        position: relative;
+        top: 2rem;
     }
 }
 
