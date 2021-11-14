@@ -17,7 +17,7 @@ textarea {
         grid-column: 2/-1;
         grid-row: 1/2;
         position: relative;
-        top: 2rem;
+        top: 2rem;   
     }
 }
 
@@ -30,4 +30,10 @@ textarea {
     width: 100%;
     display: flex;
     justify-content: end;
+}
+
+.empty-records{
+    position: absolute;
+    top: 23%;
+    left: 43%;
 }

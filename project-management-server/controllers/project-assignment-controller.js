@@ -96,7 +96,8 @@ exports.saveAssignedProject = async (req, res) => {
             const assignedProject = {
                 project: payload.project,
                 userId: payload.userId,
-                projectAllocation: payload.projectAllocation,
+                fromDate: payload.fromDate,
+                toDate: payload.toDate,
                 comments: payload.comments,
             }
 

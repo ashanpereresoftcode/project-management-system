@@ -42,70 +42,20 @@ p {
     margin: 0 !important;
 }
 
-.txt-size-20{
+.txt-size-20 {
     font-size: 1.6rem !important;
-    @include respond(phone){
+    @include respond(phone) {
         font-size: 1.2rem !important;
     }
 }
 
-.flex {
-    display: flex;
-
-    &-md-col {
-        @include respond(tab-land) {
-            flex-direction: column;
-        }
-    }
-
-    &-row {
-        flex-direction: row;
-    }
-
-    &-row-reverse {
-        flex-direction: row-reverse;
-    }
-
-    &-column {
-        flex-direction: column;
-    }
-
-    &-column-reverse {
-        flex-direction: column-reverse;
-    }
+.font-size-1 {
+    font-size: 1.1rem;
 }
 
-.flex-justify {
-    &-center {
-        justify-content: center;
-    }
-    &-end {
-        justify-content: flex-end;
-    }
-    &-start {
-        justify-content: flex-start;
-    }
-    &-space-between {
-        justify-content: space-between;
-    }
-    &-space-around {
-        justify-content: space-around;
-    }
-    &-space-evenly {
-        justify-content: space-evenly;
-    }
-}
-
-.flex-align {
-    &-center {
-        align-items: center;
-    }
-    &-end {
-        align-items: flex-end;
-    }
-    &-start {
-        align-items: flex-start;
-    }
+.error-border {
+    border-radius: 4px;
+    border: 2px solid red;
 }
 
 .h-100 {

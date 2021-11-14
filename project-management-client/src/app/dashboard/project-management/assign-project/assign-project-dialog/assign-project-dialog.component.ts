@@ -23,6 +23,8 @@ export class AssignProjectDialogComponent implements OnInit {
   projectAllocation = ProjectAllocation;
   selectedUser: any;
   existingAssignedProject: any;
+  isUpdate: boolean = false;
+  allocatedProjects: any[] = [];
 
   constructor(
     private projectManagementService: ProjectManagementService,
@@ -40,7 +42,8 @@ export class AssignProjectDialogComponent implements OnInit {
   initilizeFormGroup = () => {
     this.assignedProjectFormGroup = new FormGroup({
       project: new FormControl(null, Validators.required),
-      projectAllocation: new FormControl(null, Validators.required),
+      fromDate: new FormControl(null, Validators.required),
+      toDate: new FormControl(null, Validators.required),
       comments: new FormControl(null)
     })
   }
@@ -49,18 +52,10 @@ export class AssignProjectDialogComponent implements OnInit {
     this.blockUI.start('Fetching ......');
     this.projectManagementService.getAllProjects().subscribe(projectData => {
       if (projectData && projectData.validity) {
-
-        if (this.existingAssignedProject) {
-          this.projectDetails = projectData?.result;
-        } else if (this.selectedUser?.assignedProjects) {
-          const assignedProjects = this.selectedUser?.assignedProjects.map((x: any) => x.project);
-          this.projectDetails = projectData?.result?.filter(function (leftElement: any) {
-            return assignedProjects?.filter(function (rightElement: any) {
-              return rightElement.projectId == leftElement.projectId;
-            }).length == 0
-          });
-        }
-        this.patchForm();
+        const data = projectData?.result;
+        this.setAllocatedProject(data);
+        const existingProject = this.data?.assignedProject;
+        this.patchForm(existingProject);
       }
       this.blockUI.stop();
     }, error => {
@@ -69,19 +64,35 @@ export class AssignProjectDialogComponent implements OnInit {
     })
   }
 
+  setAllocatedProject = (projectData: any) => {
+    if (this.existingAssignedProject) {
+      this.projectDetails = projectData;
+    } else if (this.selectedUser?.assignedProjects) {
+      this.projectDetails = projectData;
+      //TODO: CHECK ON THIS LATER.
+      // const assignedProjects = this.selectedUser?.assignedProjects.map((x: any) => x.project);
+      // this.projectDetails = projectData?.filter(function (leftElement: any) {
+      //   return assignedProjects?.filter(function (rightElement: any) {
+      //     return rightElement.projectId == leftElement.projectId;
+      //   }).length == 0
+      // });
+    }
+  }
+
   setDialogData = () => {
     this.selectedUser = this.data?.user;
     this.existingAssignedProject = this.data?.assignedProject;
   }
 
-  patchForm = () => {
-    const existingProject = this.data?.assignedProject;
-    if (existingProject) {
+  patchForm = (data: any) => {
+    if (data) {
+      this.isUpdate = true;
       const patchPayload = {
-        project: this.projectDetails.find(x => x._id === existingProject?.project._id),
-        userId: existingProject?.userId,
-        projectAllocation: existingProject?.projectAllocation,
-        comments: existingProject?.comments,
+        project: this.projectDetails.find(x => x._id === data?.project._id),
+        userId: data?.userId,
+        comments: data?.comments,
+        fromDate: data.fromDate,
+        toDate: data.toDate,
       }
       this.assignedProjectFormGroup.patchValue(patchPayload);
     }
@@ -92,7 +103,6 @@ export class AssignProjectDialogComponent implements OnInit {
     if (this.assignedProjectFormGroup.valid) {
 
       if (this.existingAssignedProject) {
-
         if (this.checkAlreadyProjectAssigned()) {
           this.toastrService.error("Selected project already being assigned for this user.", "Error");
           this.blockUI.stop();
@@ -106,10 +116,10 @@ export class AssignProjectDialogComponent implements OnInit {
             if (udpatedResult) {
               this.existingAssignedProject['project'] = this.assignedProjectFormGroup.get('project')?.value;
               this.afterUpdate.emit(this.existingAssignedProject);
-              this.closeModal();
+              this.toastrService.success('Successfully updated.', "Update");
             }
             this.blockUI.stop();
-          }, error => {
+          }, () => {
             this.blockUI.stop();
           })
         }
@@ -117,7 +127,8 @@ export class AssignProjectDialogComponent implements OnInit {
         const payload = {
           project: (this.assignedProjectFormGroup.get('project')?.value)._id,
           userId: this.selectedUser?.userId,
-          projectAllocation: this.assignedProjectFormGroup.get('projectAllocation')?.value,
+          fromDate: this.assignedProjectFormGroup.get('fromDate')?.value,
+          toDate: this.assignedProjectFormGroup.get('toDate')?.value,
           comments: this.assignedProjectFormGroup.get('comments')?.value
         }
 
@@ -125,11 +136,12 @@ export class AssignProjectDialogComponent implements OnInit {
           if (assignedResult) {
             assignedResult['project'] = this.assignedProjectFormGroup.get('project')?.value;
             this.afterSave.emit(assignedResult);
-            this.closeModal();
+            const assignedProject = assignedResult?.result?.assignmentDetail
+            this.selectedUser['assignedProjects'] = [].concat(assignedProject);
+            this.toastrService.success('Successfully saved.', "Success");
           }
           this.blockUI.stop();
-        }, error => {
-          console.log(error);
+        }, () => {
           this.blockUI.stop();
         })
       }
@@ -144,6 +156,20 @@ export class AssignProjectDialogComponent implements OnInit {
     const assignedProjects = this.selectedUser?.assignedProjects.map((x: any) => x.project);
     const project = this.assignedProjectFormGroup?.get('project')?.value;
     return assignedProjects.some((x: any) => x.projectId === project.projectId);
+  }
+
+  onClear = () => {
+    this.assignedProjectFormGroup.reset({});
+  }
+
+  onEdit = (event: any) => {
+    this.existingAssignedProject = event;
+    this.patchForm(event);
+  }
+
+  afterDeletion = (event: any) => {
+    this.existingAssignedProject = event;
+    this.onClear();
   }
 
   closeModal = () => {

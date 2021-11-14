@@ -1,59 +1,24 @@
-<div class="courses-container">
-    <div class="course">
-        <div class="course-preview">
+<div class="card-wrapper">
+    <div *ngFor="let assignedProject of selectedUser?.assignedProjects" class="card-wrapper__item mat-elevation-z3">
+        <div class="header">
             <h6>Project</h6>
-            <h2>Sunshine Project</h2>
+            <span class="header--text">{{assignedProject?.project?.projectCode}}</span>
         </div>
-        <div class="course-info">
-            <!-- <div class="progress-container">
-                    <div class="progress"></div>
-                    <span class="progress-text">
-                        6/9 Challenges
-                    </span>
-                </div> -->
-            <h6>IIT-COMMUNITY</h6>
-            <h6>From Date : xxxxxxxxxx</h6>
-            <h6>To Date : xxxxxxxxxx</h6>
-            <a>Assinee : Ashan Perera</a>
-            <!-- <h2>iit</h2> -->
-            <!-- <button class="btn">Continue</button> -->
+        <div class="content">
+            <div>
+                <h5>{{assignedProject?.project?.projectName}}</h5>
+                <h5>From Date : {{assignedProject?.toDate}}</h5>
+                <h5>To Date : {{assignedProject?.fromDate}}</h5>
+                <a>Assinee : {{selectedUser?.firstName}} {{selectedUser?.lastName}}</a>
+            </div>
+            <div>
+                <button mat-icon-button (click)="onEditClick(assignedProject)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button class="pl-2" mat-icon-button (click)="onDeleteClick(assignedProject)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
         </div>
-    </div>
-</div>
-
-<div class="social-panel-container">
-    <div class="social-panel">
-        <p>Created with <i class="fa fa-heart"></i> by
-            <a target="_blank" href="https://florin-pop.com">Florin Pop</a>
-        </p>
-        <!-- <button class="close-btn"><i class="fas fa-times"></i></button> -->
-        <h4>Get in touch on</h4>
-        <ul>
-            <li>
-                <a href="https://www.patreon.com/florinpop17" target="_blank">
-                    <i class="fab fa-discord"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://twitter.com/florinpop1705" target="_blank">
-                    <i class="fab fa-twitter"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://linkedin.com/in/florinpop17" target="_blank">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://facebook.com/florinpop17" target="_blank">
-                    <i class="fab fa-facebook"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://instagram.com/florinpop17" target="_blank">
-                    <i class="fab fa-instagram"></i>
-                </a>
-            </li>
-        </ul>
     </div>
 </div>

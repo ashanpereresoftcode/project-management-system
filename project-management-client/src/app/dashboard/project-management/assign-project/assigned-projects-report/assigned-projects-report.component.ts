@@ -46,10 +46,16 @@ export class AssignedProjectsReportComponent implements OnInit {
         cellRendererFramework: ProjectCodeComponent
       },
       {
-        headerName: 'Project Allocation',
+        headerName: 'From Date',
         suppressAutoSize: true,
+        field: 'fromDate',
         width: 120,
-        cellRendererFramework: ProjectAllocationComponent
+      },
+      {
+        headerName: 'To Date',
+        suppressAutoSize: true,
+        field: 'toDate',
+        width: 120,
       },
       {
         headerName: 'Comments',
@@ -84,13 +90,13 @@ export class AssignedProjectsReportComponent implements OnInit {
       return {
         'Project Name': x?.project?.projectName,
         'Project Code': x?.project?.projectCode,
-        'Project Description': x?.project?.projectDescription,
-        'Project Allocation': this.projectAllocation[x?.projectAllocation],
+        'From Date': moment(x?.fromDate).format('YYYY-MM-DD'),
+        'To Date': moment(x?.toDate).format('YYYY-MM-DD'),
         'Comments': x?.comments,
         'Created On': moment(x?.createdOn).format('YYYY-MM-DD'),
       }
     });
-    const headers: any[] = ['Project Name', 'Project Code', 'Description', 'Project Allocation', 'Comments', 'Created On'];
+    const headers: any[] = ['Project Name', 'Project Code', 'From Date', 'To Date', 'Comments', 'Created On'];
     this.fileService.generateReport('Project Allocation', headers, pdfData, "project-allocation-report", 'Project Allocation Report', true);
     this.blockUI.stop();
   }

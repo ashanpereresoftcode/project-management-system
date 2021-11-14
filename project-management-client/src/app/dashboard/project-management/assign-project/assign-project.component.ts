@@ -51,10 +51,16 @@ export class AssignProjectComponent implements OnInit, OnDestroy {
         cellRendererFramework: ProjectCodeComponent
       },
       {
-        headerName: 'Project Allocation',
+        headerName: 'From Date',
         suppressAutoSize: true,
+        field: 'fromDate',
         width: 120,
-        cellRendererFramework: ProjectAllocationComponent
+      },
+      {
+        headerName: 'To Date',
+        suppressAutoSize: true,
+        field: 'toDate',
+        width: 120,
       },
       {
         headerName: 'Comments',
