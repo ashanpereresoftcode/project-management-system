@@ -102,27 +102,26 @@ export class AssignProjectDialogComponent implements OnInit {
     this.blockUI.start('Processing .......');
     if (this.assignedProjectFormGroup.valid) {
 
-      if (this.existingAssignedProject) {
-        if (this.checkAlreadyProjectAssigned()) {
-          this.toastrService.error("Selected project already being assigned for this user.", "Error");
-          this.blockUI.stop();
-        } else {
-          this.existingAssignedProject.project = (this.assignedProjectFormGroup.get('project')?.value)._id;
-          this.existingAssignedProject.userId = this.selectedUser?.userId;
-          this.existingAssignedProject.projectAllocation = this.assignedProjectFormGroup.get('projectAllocation')?.value;
-          this.existingAssignedProject.comments = this.assignedProjectFormGroup.get('comments')?.value;
+      if (this.checkAlreadyProjectAssigned()) {
+        this.toastrService.error("Selected project already being assigned for this user.", "Error");
+        this.blockUI.stop();
+      } else if (this.existingAssignedProject) {
+        this.existingAssignedProject.project = (this.assignedProjectFormGroup.get('project')?.value)._id;
+        this.existingAssignedProject.userId = this.selectedUser?.userId;
+        this.existingAssignedProject.projectAllocation = this.assignedProjectFormGroup.get('projectAllocation')?.value;
+        this.existingAssignedProject.comments = this.assignedProjectFormGroup.get('comments')?.value;
 
-          this.projectManagementService.updateAssignedProject(this.existingAssignedProject).subscribe(udpatedResult => {
-            if (udpatedResult) {
-              this.existingAssignedProject['project'] = this.assignedProjectFormGroup.get('project')?.value;
-              this.afterUpdate.emit(this.existingAssignedProject);
-              this.toastrService.success('Successfully updated.', "Update");
-            }
-            this.blockUI.stop();
-          }, () => {
-            this.blockUI.stop();
-          })
-        }
+        this.projectManagementService.updateAssignedProject(this.existingAssignedProject).subscribe(udpatedResult => {
+          if (udpatedResult) {
+            this.existingAssignedProject['project'] = this.assignedProjectFormGroup.get('project')?.value;
+            this.afterUpdate.emit(this.existingAssignedProject);
+            this.toastrService.success('Successfully updated.', "Update");
+            this.onClear();
+          }
+          this.blockUI.stop();
+        }, () => {
+          this.blockUI.stop();
+        })
       } else {
         const payload = {
           project: (this.assignedProjectFormGroup.get('project')?.value)._id,
@@ -137,8 +136,11 @@ export class AssignProjectDialogComponent implements OnInit {
             assignedResult['project'] = this.assignedProjectFormGroup.get('project')?.value;
             this.afterSave.emit(assignedResult);
             const assignedProject = assignedResult?.result?.assignmentDetail
-            this.selectedUser['assignedProjects'] = [].concat(assignedProject);
+            // this.selectedUser['assignedProjects']?.length > 0 ?
+            //   this.selectedUser['assignedProjects'].push(assignedProject) :
+            //   this.selectedUser['assignedProjects'] = [assignedProject];
             this.toastrService.success('Successfully saved.', "Success");
+            this.onClear();
           }
           this.blockUI.stop();
         }, () => {
