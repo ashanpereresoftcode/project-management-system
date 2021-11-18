@@ -98,7 +98,7 @@ exports.saveAssignedSkill = async (req, res) => {
 
             const assignedSkill = {
                 skill: payload.skill,
-                userId: payload.userId,
+                user: payload.user,
                 rating: payload.rating,
                 ratingCard: payload.ratingCard,
                 comments: payload.comments,
@@ -129,7 +129,7 @@ exports.updateAssignedSkill = async (req, res) => {
             const assignedSkill = {
                 _id: payload._id,
                 assignedUniqueId: payload.assignedUniqueId,
-                userId: payload.userId,
+                user: payload.user,
                 skill: payload.skill,
                 rating: payload.rating,
                 ratingCard: payload.ratingCard,

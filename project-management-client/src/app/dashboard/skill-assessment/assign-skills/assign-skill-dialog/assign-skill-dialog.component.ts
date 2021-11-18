@@ -3,16 +3,15 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ColDef, GridApi, GridOptions } from "ag-grid-community";
 import { Observable, Subscription } from 'rxjs';
-import { SkillCellRendererComponent } from './skill-cell-renderer/skill-cell-renderer.component';
-import { SkillAssessmentService, AuthService } from '../../services';
+import { SkillAssessmentService, AuthService } from '../../../../shared/services';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
-  selector: 'app-skill-assignment',
-  templateUrl: './skill-assignment.component.html',
-  styleUrls: ['./skill-assignment.component.scss']
+  selector: 'app-assign-skill-dialog',
+  templateUrl: './assign-skill-dialog.component.html',
+  styleUrls: ['./assign-skill-dialog.component.scss']
 })
-export class SkillAssignmentComponent implements OnInit {
+export class AssignSkillDialogComponent implements OnInit {
 
   @Input() selectdUser: any;
   @BlockUI() blockUI!: NgBlockUI;
@@ -25,7 +24,7 @@ export class SkillAssignmentComponent implements OnInit {
   skills: any[] = [];
   skillAssignFormGroup!: FormGroup;
   currentRating: number = 0;
-
+  users: any[] = [];
   gridApi!: GridApi;
   gridColumnApi: any;
 
@@ -38,9 +37,10 @@ export class SkillAssignmentComponent implements OnInit {
   panelOpenState = false;
 
   constructor(
-    public matDialogRef: MatDialogRef<SkillAssignmentComponent>,
+    public matDialogRef: MatDialogRef<AssignSkillDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private skillAssessmentService: SkillAssessmentService) {
+    private skillAssessmentService: SkillAssessmentService,
+    private authService: AuthService) {
     matDialogRef.disableClose = false;
   }
 
@@ -50,37 +50,31 @@ export class SkillAssignmentComponent implements OnInit {
     }
     this.matDialogRef.disableClose = true;
     this.initializeFormGroup();
-    this.initializeColumns();
-    this.loadAllSkills();
-  }
-
-  initializeColumns = () => {
-    this.columnDefs = [
-      {
-        headerName: 'Skill',
-        suppressAutoSize: true,
-        width: 120,
-        cellRendererFramework: SkillCellRendererComponent
-      },
-      {
-        field: 'rating',
-        headerName: 'Rating',
-        suppressAutoSize: true,
-        editable: true,
-        width: 150
-      },
-    ]
+    this.fetchSkills();
+    this.fetchUsers();
   }
 
   initializeFormGroup = () => {
     this.skillAssignFormGroup = new FormGroup({
+      // resource: new FormControl(null, Validators.required),
       skill: new FormControl(null, Validators.required),
       rating: new FormControl(null),
       comments: new FormControl(null)
     })
   }
 
-  loadAllSkills = () => {
+  fetchUsers = () => {
+    this.subscriptions.push(this.authService.fetchUsers().subscribe(userResult => {
+      if (userResult) {
+        this.users = userResult.result;
+      }
+    }, error => {
+      console.log(error);
+    }))
+  }
+
+
+  fetchSkills = () => {
     this.subscriptions.push(this.skillAssessmentService.getAllSkills().subscribe((skills: any) => {
       if (skills && skills.validity) {
         console.log(skills);
@@ -123,7 +117,7 @@ export class SkillAssignmentComponent implements OnInit {
     this.blockUI.start('Saving......');
     if (this.skillAssignFormGroup.valid) {
       const assignedSkill = this.skillAssignFormGroup.value;
-      assignedSkill['userId'] = this.selectdUser.userId;
+      assignedSkill['user'] = this.selectdUser._id;
 
       this.skillAssessmentService.saveAssignedSkill(assignedSkill).subscribe(savedResult => {
         if (savedResult) {

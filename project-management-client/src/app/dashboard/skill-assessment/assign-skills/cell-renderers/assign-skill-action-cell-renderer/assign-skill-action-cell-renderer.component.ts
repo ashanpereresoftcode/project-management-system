@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICellRendererParams } from "ag-grid-community";
-import { SkillAssessmentService } from '../../../shared/services';
+import { SkillAssessmentService } from '../../../../../shared/services';
 import { MatDialog } from '@angular/material/dialog';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ToastrService } from 'ngx-toastr';
@@ -51,7 +51,7 @@ export class AssignSkillActionCellRendererComponent implements OnInit {
   proceedDelete = (appIds: string[]) => {
     let form = new FormData();
     form.append("assignedSkillIds", JSON.stringify(appIds));
-    form.append("userId", JSON.stringify(this.data.userId));
+    form.append("userId", JSON.stringify(this.data?.user?.userId));
 
     this.skillAssessmentService.deleteAssignedSkill(form).subscribe((deletedResult: any) => {
       if (deletedResult) {
@@ -63,5 +63,9 @@ export class AssignSkillActionCellRendererComponent implements OnInit {
       this.toastrService.error('Failed to delete', 'Error');
       this.blockUI.stop();
     });
+  }
+
+  onSkillUpdate = () => { 
+    this.skillAssessmentService.emitSkillInformation.emit(this.data);
   }
 }

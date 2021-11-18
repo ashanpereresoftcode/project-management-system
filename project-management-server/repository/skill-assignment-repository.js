@@ -136,10 +136,17 @@ exports.updateAssignedSkill = async (skillAssignment) => {
 
 exports.getAssignedSkills = async () => {
     return await skillAssignmentModel.find({ isActive: true })
-        // .populate({
-        //     path: 'owner',
-        //     model: 'ClubMember',
-        // })
+        .populate({
+            path: "user",
+            model: "User",
+            match: { isActive: true },
+            select: "-password -passwordSalt"
+        })
+        .populate({
+            path: "skill",
+            model: "Skill",
+            match: { isActive: true },
+        })
         .sort({ createdOn: 'descending' });
 }
 

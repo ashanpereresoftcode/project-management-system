@@ -5,7 +5,6 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { CreateUserComponent } from '../../create-user/create-user.component';
-import { SkillAssignmentComponent, ProjectAssignmentComponent } from '../../../../shared/shared-components';
 import { AuthService } from '../../../../shared/services';
 
 @Component({
@@ -75,22 +74,6 @@ export class UserManagementActionCellRendererComponent implements OnInit, OnDest
       this.blockUI.stop();
     }));
   }
-
-  // openAssignment = () => {
-  //   this.dialog.open(SkillAssignmentComponent, {
-  //     width: '50%',
-  //     height: 'auto',
-  //     data: {}
-  //   })
-  // }
-
-  // openProjectAssignment = () => {
-  //   this.dialog.open(ProjectAssignmentComponent, {
-  //     width: '50%',
-  //     height: 'auto',
-  //     data: {}
-  //   })
-  // }
 
   ngOnDestroy() {
     if (this.userSubscriptions && this.userSubscriptions.length > 0) {

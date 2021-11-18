@@ -1,0 +1,80 @@
+.demo-table {
+  width: 100%;
+}
+
+// .mat-column-demo-position {
+//     width: 32px;
+//     border-right: 1px solid currentColor;
+//     padding-right: 24px;
+//     text-align: center;
+// }
+
+// .mat-column-demo-name {
+//     padding-left: 16px;
+//     font-size: 15px;
+// }
+
+// .mat-column-demo-weight {
+//     font-style: italic;
+// }
+
+// .mat-column-demo-symbol {
+//     width: 20px;
+//     text-align: center;
+//     font-weight: bold;
+// }
+
+.assigned-skill {
+  display: grid;
+  grid-template-columns: 70% 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 1rem;
+
+  &__grid-layout {
+    grid-column: 1/2;
+  }
+
+  &__form-layout {
+    grid-column: 2/-1;
+  }
+}
+
+textarea {
+  resize: none !important;
+}
+
+.allocation-wrapper {
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  grid-template-rows: 40rem;
+  grid-gap: 1rem;
+
+  &__form {
+    grid-column: 1 / 2;
+    grid-row: 1/-1;
+  }
+
+  &__view {
+    grid-column: 2/-1;
+    grid-row: 1/2;
+    position: relative;
+    top: 2rem;
+  }
+}
+
+.date-position {
+  position: relative;
+  bottom: 0.4rem;
+}
+
+.save-btn-actions {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.empty-records {
+  position: absolute;
+  top: 23%;
+  left: 43%;
+}

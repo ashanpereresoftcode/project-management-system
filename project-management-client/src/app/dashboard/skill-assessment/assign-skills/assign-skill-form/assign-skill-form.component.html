@@ -1,0 +1,39 @@
+<mat-card [formGroup]="skillAssignFormGroup">
+    <mat-card-title>Assign Skill</mat-card-title>
+    <div class="mt-2">
+        <div class="flex flex-col w-full">
+            <ng-select name="resource" id="resource" placeholder="Search Resource" formControlName="resource">
+                <ng-option *ngFor="let user of users" [value]="user?._id">{{user?.userName}}</ng-option>
+            </ng-select>
+        </div>
+
+        <div class="flex flex-col w-full mt-2">
+            <ng-select name="skill" id="skill" placeholder="Select Skill" formControlName="skill">
+                <ng-option *ngFor="let skill of skills" [value]="skill?._id">{{skill?.skillName}}</ng-option>
+            </ng-select>
+        </div>
+
+        <div class="flex mt-1">
+            <div class="flex flex-col">
+                <div class="rate-skill flex items-center">
+                    <label for="rateSkill">Rate Skill</label>
+                    <ratings class="ml-1" id="rateSkill" [rating]="currentRating"
+                        (ratingUpdated)="updatedRating($event)">
+                    </ratings>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex">
+            <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Comments</mat-label>
+                <textarea id="comments" matInput placeholder="Comments" formControlName="comments"></textarea>
+            </mat-form-field>
+        </div>
+
+        <div class="flex justify-end">
+            <button mat-stroked-button [disabled]="skillAssignFormGroup.invalid" (click)="onAssign()">Assign</button>
+            <button mat-stroked-button class="ml-1" (click)="clearForm()">Clear</button>
+        </div>
+    </div>
+</mat-card>

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const assignedSkillSchema = mongoose.Schema({
     assignedUniqueId: { type: String },
-    userId: { type: String },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
     skill: { type: mongoose.Schema.Types.ObjectId, ref: "Skill", required: false },
     rating: { type: String },
     ratingCard: { type: String },

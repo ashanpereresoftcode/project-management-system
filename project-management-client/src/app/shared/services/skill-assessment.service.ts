@@ -12,6 +12,9 @@ export class SkillAssessmentService {
   afterDelete: EventEmitter<any> = new EventEmitter<any>(false);
   afterAssignmentDeletion: EventEmitter<any> = new EventEmitter<any>(false);
 
+  // data emitters.
+  emitSkillInformation: EventEmitter<any> = new EventEmitter<any>();
+
   private _skillInfo: any;
 
   get skillInformation() {
@@ -46,8 +49,18 @@ export class SkillAssessmentService {
     return this.httpClient.post(url, payload);
   }
 
+  updateAssignedSkill = (payload: any): Observable<any> => {
+    const url: string = `${this.baseUrl}/api/v1/skill-assignment/update`;
+    return this.httpClient.put(url, payload);
+  }
+
   getSkill = (skillId: string): Observable<any> => {
     const url: string = `${this.baseUrl}/api/v1/skill/${skillId}`;
+    return this.httpClient.get(url);
+  }
+
+  getAllAssignedSkills = (): Observable<any> => {
+    const url: string = `${this.baseUrl}/api/v1/skill-assignment/get-all`;
     return this.httpClient.get(url);
   }
 

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SkillCellRendererComponent } from './skill-cell-renderer.component';
+import { AssignSkillDialogComponent } from './assign-skill-dialog.component';
 
-describe('SkillCellRendererComponent', () => {
-  let component: SkillCellRendererComponent;
-  let fixture: ComponentFixture<SkillCellRendererComponent>;
+describe('AssignSkillDialogComponent', () => {
+  let component: AssignSkillDialogComponent;
+  let fixture: ComponentFixture<AssignSkillDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SkillCellRendererComponent ]
+      declarations: [ AssignSkillDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SkillCellRendererComponent);
+    fixture = TestBed.createComponent(AssignSkillDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

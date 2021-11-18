@@ -2,17 +2,17 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ColDef, GridApi, GridOptions } from "ag-grid-community";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { AssignSkillCellRendererComponent } from '../assign-skill-cell-renderer/assign-skill-cell-renderer.component';
-import { AssignedSkillCardCellRendererComponent } from '../assigned-skill-card-cell-renderer/assigned-skill-card-cell-renderer.component';
-import { FileService } from '../../../shared/services/file.service';
+import { AssignSkillCellRendererComponent } from '../cell-renderers/assign-skill-cell-renderer/assign-skill-cell-renderer.component';
+import { AssignedSkillCardCellRendererComponent } from '../cell-renderers/assigned-skill-card-cell-renderer/assigned-skill-card-cell-renderer.component';
+import { FileService } from '../../../../shared/services/file.service';
 import * as moment from 'moment';
 
 @Component({
   selector: 'app-skill-report',
-  templateUrl: './skill-report.component.html',
-  styleUrls: ['./skill-report.component.scss']
+  templateUrl: './assigned-skill-report.comopnent.html',
+  styleUrls: ['./assigned-skill-report.comopnent.scss']
 })
-export class SkillReportComponent implements OnInit {
+export class AssignedSkillReportComponent implements OnInit {
 
   @BlockUI() blockUI!: NgBlockUI;
 
@@ -26,7 +26,7 @@ export class SkillReportComponent implements OnInit {
   user: any;
 
   constructor(
-    public matDialogRef: MatDialogRef<SkillReportComponent>,
+    public matDialogRef: MatDialogRef<AssignedSkillReportComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fileService: FileService
   ) {

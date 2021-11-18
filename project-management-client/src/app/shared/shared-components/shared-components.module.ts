@@ -23,15 +23,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatExpansionModule } from '@angular/material/expansion';
-
 import { MenuItemsComponent } from './menu-items/menu-items.component';
 import { ProjectAssignmentComponent } from './project-assignment/project-assignment.component';
 import { RatingsComponent } from './ratings/ratings.component';
-import { SkillAssignmentComponent } from './skill-assignment/skill-assignment.component';
 import { SkillRatingCellRendererComponent } from './skill-rating-cell-renderer/skill-rating-cell-renderer.component';
 import { ProjectAssignCellRendererComponent } from './project-assign-cell-renderer/project-assign-cell-renderer.component';
-import { SkillCellRendererComponent } from './skill-assignment/skill-cell-renderer/skill-cell-renderer.component';
-
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -43,16 +39,13 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MenuItemsComponent,
     ProjectAssignmentComponent,
     RatingsComponent,
-    SkillAssignmentComponent,
     SkillRatingCellRendererComponent,
     ProjectAssignCellRendererComponent,
-    SkillCellRendererComponent,
   ],
   imports: [
     AgGridModule.withComponents([
       SkillRatingCellRendererComponent,
       ProjectAssignCellRendererComponent,
-      SkillCellRendererComponent
     ]),
     CommonModule,
     MatIconModule,
@@ -81,7 +74,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MenuItemsComponent,
     ProjectAssignmentComponent,
     RatingsComponent,
-    SkillAssignmentComponent
   ],
   providers: [
     {

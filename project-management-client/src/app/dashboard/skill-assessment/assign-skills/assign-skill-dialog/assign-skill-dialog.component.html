@@ -1,0 +1,106 @@
+<!-- <div class="pr-6">
+   
+    <div [formGroup]="skillAssignFormGroup">
+        <div class="flex mt-2">
+            <ng-select class="w-1/2" name="resource" id="resource" placeholder="Select Skill" formControlName="skill"
+                (change)="onSkillSelection()">
+                <ng-option *ngFor="let skill of skills" [value]="skill">{{skill.skillName}}</ng-option>
+            </ng-select>
+
+            <div class="rate-skill flex items-center">
+                <label for="rateSkill">Rate Skill</label>
+                <ratings class="margin-lb-rating" id="rateSkill" [rating]="currentRating"
+                    (ratingUpdated)="updatedRating($event)">
+                </ratings>
+            </div>
+        </div>
+        <div class="flex mt-2">
+            <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Comments</mat-label>
+                <textarea id="comments" matInput placeholder="Comments" formControlName="comments"></textarea>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="flex">
+        <button mat-stroked-button [disabled]="skillAssignFormGroup.invalid" (click)="onAssign()">Assign</button>
+    </div>
+</div> -->
+
+<div class="pr-6">
+    <div class="flex justify-between items-center">
+        <h2>Allocate Skills</h2>
+        <button mat-icon-button (click)="closeModal()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div class="allocation-wrapper">
+        <div class="allocation-wrapper__form" [formGroup]="skillAssignFormGroup">
+            <div>
+                <div class="flex mt-2">
+                    <div class="flex flex-col w-full">
+                        <ng-select name="resource" id="resource" placeholder="Select Skill" formControlName="skill"
+                            (change)="onSkillSelection()">
+                            <ng-option *ngFor="let skill of skills" [value]="skill">{{skill.skillName}}</ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="flex mt-1">
+                    <div class="flex flex-col">
+                        <div class="rate-skill flex items-center">
+                            <label for="rateSkill">Rate Skill</label>
+                            <ratings class="ml-1" id="rateSkill" [rating]="currentRating"
+                                (ratingUpdated)="updatedRating($event)">
+                            </ratings>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <mat-form-field class="w-full" appearance="outline">
+                        <mat-label>Comments</mat-label>
+                        <textarea id="comments" matInput placeholder="Comments" formControlName="comments"></textarea>
+                    </mat-form-field>
+                </div>
+
+                <!-- USER INFORMATION -->
+                <div class="flex">
+                    <div class="flex flex-col w-2/4">
+                        <mat-form-field appearance="outline">
+                            <mat-label>First Name</mat-label>
+                            <input matInput placeholder="First Name" disabled>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex flex-col w-2/4 ml-1">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput placeholder="Last Name" disabled>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="flex">
+                    <mat-form-field class="w-full" appearance="outline">
+                        <mat-label>Designation</mat-label>
+                        <input matInput placeholder="Designation" disabled>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="flex save-btn-actions">
+            <button mat-stroked-button [disabled]="skillAssignFormGroup.invalid" (click)="onAssign()">Assign</button>
+
+            <button mat-stroked-button class="ml-1">
+                Clear
+            </button>
+        </div>
+        <div class="allocation-wrapper__view">
+            <!-- <perfect-scrollbar *ngIf="selectedUser?.assignedProjects?.length > 0">
+                <assignee-card [selectedUser]="selectedUser" (onEdit)="onEdit($event)"
+                    (afterDeletion)="afterDeletion($event)"></assignee-card>
+            </perfect-scrollbar>
+            <span class="empty-records"
+                *ngIf="selectedUser?.assignedProjects && selectedUser?.assignedProjects?.length === 0">No records
+                found</span> -->
+        </div>
+    </div>

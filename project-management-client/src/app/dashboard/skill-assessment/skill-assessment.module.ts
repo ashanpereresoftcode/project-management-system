@@ -21,6 +21,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTableModule } from '@angular/material/table';
+
+import { TableModule } from 'ngx-easy-table';
 
 import { SkillAssessmentComponent } from './skill-assessment.component';
 import { ViewAssessmentsComponent } from './view-assessments/view-assessments.component';
@@ -29,10 +32,14 @@ import { SkillAssessmentRoutingModule } from './skill-assessment.routing';
 import { SharedComponentsModule } from '../../shared/shared-components';
 import { SkillCellRendererComponent } from './skill-cell-renderer/skill-cell-renderer.component';
 import { AssignSkillsComponent } from './assign-skills/assign-skills.component'
-import { AssignSkillCellRendererComponent } from './assign-skill-cell-renderer/assign-skill-cell-renderer.component';
-import { AssignSkillActionCellRendererComponent } from './assign-skill-action-cell-renderer/assign-skill-action-cell-renderer.component';
-import { AssignedSkillCardCellRendererComponent } from './assigned-skill-card-cell-renderer/assigned-skill-card-cell-renderer.component';
-import { SkillReportComponent } from './skill-report/skill-report.component';
+import { AssignSkillCellRendererComponent } from './assign-skills/cell-renderers/assign-skill-cell-renderer/assign-skill-cell-renderer.component';
+import { AssignSkillActionCellRendererComponent } from './assign-skills/cell-renderers/assign-skill-action-cell-renderer/assign-skill-action-cell-renderer.component';
+import { AssignedSkillCardCellRendererComponent } from './assign-skills/cell-renderers/assigned-skill-card-cell-renderer/assigned-skill-card-cell-renderer.component';
+import { AssignedSkillReportComponent } from './assign-skills/assigned-skill-report/assigned-skill-report.comopnent';
+import { AssignSkillDialogComponent } from './assign-skills/assign-skill-dialog/assign-skill-dialog.component';
+import { UserNameCellRendererComponent } from './assign-skills/cell-renderers/user-name-cell-renderer/user-name-cell-renderer.component';
+import { UserDesignationCellRendererComponent } from './assign-skills/cell-renderers/user-designation-cell-renderer/user-designation-cell-renderer.component';
+import { AssignSkillFormComponent } from './assign-skills/assign-skill-form/assign-skill-form.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +51,11 @@ import { SkillReportComponent } from './skill-report/skill-report.component';
     AssignSkillCellRendererComponent,
     AssignSkillActionCellRendererComponent,
     AssignedSkillCardCellRendererComponent,
-    SkillReportComponent
+    AssignedSkillReportComponent,
+    AssignSkillDialogComponent,
+    UserNameCellRendererComponent,
+    UserDesignationCellRendererComponent,
+    AssignSkillFormComponent,
   ],
   imports: [
     CommonModule,
@@ -67,12 +78,18 @@ import { SkillReportComponent } from './skill-report/skill-report.component';
     FormsModule,
     ReactiveFormsModule,
     AgGridModule.withComponents([
+      SkillCellRendererComponent,
       AssignSkillCellRendererComponent,
-      SkillCellRendererComponent
+      AssignSkillActionCellRendererComponent,
+      AssignedSkillCardCellRendererComponent,
+      UserNameCellRendererComponent,
+      UserDesignationCellRendererComponent
     ]),
     SharedComponentsModule,
     NgSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatTableModule,
+    TableModule
   ]
 })
 
