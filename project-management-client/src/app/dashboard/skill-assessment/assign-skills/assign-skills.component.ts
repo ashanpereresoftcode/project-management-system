@@ -18,26 +18,6 @@ import { UserDesignationCellRendererComponent } from './cell-renderers/user-desi
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-];
-
 @Component({
   selector: 'app-assign-skills',
   templateUrl: './assign-skills.component.html',
@@ -60,6 +40,11 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   skillColumns: string[] = ['skill', 'rate-point', 'rate-card', 'comments', 'action'];
 
+  skills: any[] = [];
+  users: any[] = [];
+  currentRating: number = 0;
+  skillAssignFormGroup!: FormGroup;
+
   constructor(
     private skillAssessmentService: SkillAssessmentService,
     private authService: AuthService, public matDialog: MatDialog,
@@ -67,7 +52,8 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.fetchAssignedSkills();
+    this.initializeFormGroup();
+    this.fetchSkills();
     this.fetchUsers();
   }
 
@@ -75,9 +61,21 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataSource.paginator = this.paginator;
   }
 
+  initializeFormGroup = () => {
+    this.skillAssignFormGroup = new FormGroup({
+      resource: new FormControl(null, Validators.required),
+      skill: new FormControl(null, Validators.required),
+      rating: new FormControl(null),
+      comments: new FormControl(null)
+    })
+  }
+
+
   fetchUsers = () => {
     this.authService.fetchUsers().subscribe(serviceRes => {
       if (serviceRes && serviceRes.result) {
+        debugger
+        this.users = serviceRes?.result;
         serviceRes.result.forEach((u: any, index: number) => {
           u['index'] = index ? index : 1;
           u['expanded'] = false;
@@ -87,10 +85,10 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-  fetchAssignedSkills = () => {
-    this.skillAssessmentService.getAllAssignedSkills().subscribe(serveiceRes => {
-      if (serveiceRes) {
-
+  fetchSkills = () => {
+    this.skillAssessmentService.getAllSkills().subscribe((skills: any) => {
+      if (skills && skills.validity) {
+        this.skills = skills.result;
       }
     }, error => {
       console.log(error);
@@ -126,6 +124,34 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     return ratingCard;
   }
 
+  onAssign = () => {
+    this.blockUI.start('Saving......');
+    if (this.skillAssignFormGroup.valid) {
+      const assignedSkill = this.skillAssignFormGroup.value;
+
+      const assignedSkillPayload = {
+        skill: assignedSkill.skill,
+        user: assignedSkill.resource,
+        rating: assignedSkill.rating,
+        ratingCard: this.getRatingCard(+assignedSkill?.rating),
+        comments: assignedSkill.comments,
+      }
+
+      this.skillAssessmentService.saveAssignedSkill(assignedSkillPayload).subscribe(savedResult => {
+        if (savedResult) {
+          savedResult['assignedSkill'] = this.skillAssignFormGroup.value;
+          this.fetchUsers();
+        }
+        this.blockUI.stop();
+      }, error => {
+        this.blockUI.stop();
+      });
+    } else {
+      this.blockUI.stop();
+      console.log(this.skillAssignFormGroup.errors);
+    }
+  }
+
   editAssignedSkill = (assignedSkill: any) => {
     // edit implementation
   }
@@ -157,6 +183,11 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     //   this.toastrService.error('Failed to delete', 'Error');
     //   this.blockUI.stop();
     // });
+  }
+
+  updatedRating = (event: any) => {
+    this.currentRating = event;
+    this.skillAssignFormGroup.get('rating')?.setValue(event);
   }
 
   openSkillAssignmentReport = (selectedUser: any) => {

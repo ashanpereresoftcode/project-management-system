@@ -3,23 +3,32 @@
         <span class="text-3xl uppercase">Skill Assessment</span>
     </div>
 </div>
-<div autocomplete="off" class="flex mt-2">
-    <!-- <div class="flex">
-        <button class="h-16" mat-raised-button>
-            <mat-icon>assignment_turned_in</mat-icon>
-            <span class="text-xl">Assign Project</span>
-        </button>
-        <button class="ml-1 h-16" mat-raised-button (click)="openSkillAssignmentReport()">
-            <mat-icon>summarize</mat-icon>
-            <span class="text-xl">Generate Report</span>
-        </button>
-    </div> -->
-    <!-- <ng-select name="resource" id="resource" placeholder="Select Skill" formControlName="skill"
-        (change)="onSkillSelection()">
-        <ng-option *ngFor="let skill of skills" [value]="skill">{{skill.skillName}}</ng-option>
-    </ng-select> -->
-</div>
-<div class="mt-3 elevation-z8">
+
+<mat-card class="mt-2">
+    <div class="flex justify-between" [formGroup]="skillAssignFormGroup">
+        <div autocomplete="off" class="flex w-4/5">
+            <ng-select class="w-1/4" name="resource" id="resource" placeholder="Select Resource"
+                formControlName="resource">
+                <ng-option *ngFor="let user of users" [value]="user?._id">{{user?.userName}}</ng-option>
+            </ng-select>
+
+            <ng-select class="ml-1 w-1/4" name="skill" id="skill" placeholder="Select Skill" formControlName="skill">
+                <ng-option *ngFor="let skill of skills" [value]="skill?._id">{{skill?.skillName}}</ng-option>
+            </ng-select>
+
+            <div class="rate-skill flex items-center">
+                <label for="rateSkill">Rate Skill</label>
+                <ratings class="ml-3" id="rateSkill" [rating]="currentRating" (ratingUpdated)="updatedRating($event)">
+                </ratings>
+            </div>
+        </div>
+        <div class="flex">
+            <button mat-stroked-button (click)="onAssign()">Assign</button>
+        </div>
+    </div>
+</mat-card>
+
+<div class="mt-3 elevation-z5">
     <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
         <ng-container matColumnDef="index">
             <th mat-header-cell *matHeaderCellDef> id# </th>

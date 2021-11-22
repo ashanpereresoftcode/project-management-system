@@ -69,7 +69,7 @@ exports.save = async (skillAssignmentDetail) => {
     try {
         await session.withTransaction(async () => {
             const savedRes = await skillAssignmentModel.create(skillAssignmentDetail);
-            const result = await userRepo.getUserDetail(skillAssignmentDetail.userId);
+            const result = await userRepo.getUserById(skillAssignmentDetail.user);
             if (result && result.length > 0) {
                 const user = result[0];
                 if (user['assignedSkills'] && user['assignedSkills'].length > 0) {

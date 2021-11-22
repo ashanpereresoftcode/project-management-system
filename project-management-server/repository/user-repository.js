@@ -121,9 +121,49 @@ exports.filterUser = async (filterParams) => {
     .select("-password -passwordSalt");
 };
 
+
+
 exports.getUserDetail = async (userId) => {
   return await userModel
     .find({ userId: userId })
+    .populate({
+      path: "roles",
+      model: "Role",
+      select: "-_id -__v",
+      match: { isActive: true },
+      populate: {
+        path: "permissions",
+        match: { isActive: true },
+        select: "-_id -__v -permissionId",
+        model: "Permission",
+      },
+    })
+    .populate({
+      path: "assignedSkills",
+      model: "AssignedSkill",
+      match: { isActive: true },
+      populate: {
+        path: "skill",
+        match: { isActive: true },
+        model: "Skill",
+      },
+    })
+    .populate({
+      path: "assignedProjects",
+      model: "AssignedProjects",
+      match: { isActive: true },
+      populate: {
+        path: "project",
+        match: { isActive: true },
+        model: "Project",
+      },
+    })
+    .select("-password -passwordSalt -__v");
+};
+
+exports.getUserById = async (userId) => {
+  return await userModel
+    .find({ _id: userId })
     .populate({
       path: "roles",
       model: "Role",
