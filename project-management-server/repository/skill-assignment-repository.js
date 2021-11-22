@@ -131,6 +131,19 @@ exports.updateAssignedSkill = async (skillAssignment) => {
     const updateDoc = {
         $set: { ...skillAssignment },
     };
+
+    const result = await userRepo.getUserById(skillAssignment.user);
+    if (result && result.length > 0) {
+        const user = result[0];
+        if (user['assignedSkills'] && user['assignedSkills'].length > 0) {
+            const skillIds = user.assignedSkills.filter(x => x._id !== skillAssignment.skill).map(i => i._id)
+            user.assignedSkills = skillIds;
+        }
+        await userRepo.updateUser(user);
+        console.log('Successfully updated the user.');
+    } else {
+        console.log('Failed to load user .');
+    }
     return await skillAssignmentModel.updateOne(filter, updateDoc, options);
 }
 
@@ -156,7 +169,7 @@ exports.getAssignedDetailById = async (assignedUniqueId) => {
 
 exports.deleteDetails = async (payload, userId) => {
 
-    const user = await userRepo.getUserDetail(userId);
+    const user = await userRepo.getUserById(userId);
     let skillIds = [];
     let filteredArray = [];
 

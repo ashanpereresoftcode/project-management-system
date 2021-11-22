@@ -8,7 +8,7 @@
     <div class="flex justify-between" [formGroup]="skillAssignFormGroup">
         <div autocomplete="off" class="flex w-4/5">
             <ng-select class="w-1/4" name="resource" id="resource" placeholder="Select Resource"
-                formControlName="resource">
+                formControlName="resource" (change)="onResourceChange()">
                 <ng-option *ngFor="let user of users" [value]="user?._id">{{user?.userName}}</ng-option>
             </ng-select>
 
@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="flex">
-            <button mat-stroked-button (click)="onAssign()">Assign</button>
+            <button mat-stroked-button (click)="onAssign()">{{isUpdate ? 'Update' : 'Assign'}}</button>
         </div>
     </div>
 </mat-card>
@@ -87,8 +87,9 @@
 
         <ng-container matColumnDef="expandedDetail">
             <td colspan="6" mat-cell *matCellDef="let element" [ngClass]="{'rm-border-bottom': !element?.expanded}">
-                <div class="element-detail" [@detailExpand]="element?.expanded ? 'expanded' : 'collapsed'">
-                    <table mat-table [dataSource]="element?.assignedSkills" class="mat-elevation-z8 sub-table">
+                <div class="element-detail p-1 {{element?.expanded ? 'expanded' : 'collapsed'}}"
+                    [@detailExpand]="element?.expanded ? 'expanded' : 'collapsed'">
+                    <table mat-table [dataSource]="element?.assignedSkills" class="sub-table">
                         <ng-container matColumnDef="skill">
                             <th mat-header-cell *matHeaderCellDef> Skill </th>
                             <td mat-cell *matCellDef="let assignedSkill"> {{assignedSkill?.skill?.skillName}} </td>
@@ -109,7 +110,7 @@
                         <ng-container matColumnDef="action">
                             <th mat-header-cell *matHeaderCellDef> Action </th>
                             <td mat-cell *matCellDef="let assignedSkill">
-                                <div class="flex">
+                                <div class="flex justify-center">
                                     <button mat-icon-button (click)="editAssignedSkill(assignedSkill)">
                                         <mat-icon>edit</mat-icon>
                                     </button>

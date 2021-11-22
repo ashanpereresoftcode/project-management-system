@@ -44,6 +44,8 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   users: any[] = [];
   currentRating: number = 0;
   skillAssignFormGroup!: FormGroup;
+  isUpdate: boolean = false;
+  existingPayload: any;
 
   constructor(
     private skillAssessmentService: SkillAssessmentService,
@@ -70,18 +72,20 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-
   fetchUsers = () => {
+    this.blockUI.start('Processing.....');
     this.authService.fetchUsers().subscribe(serviceRes => {
       if (serviceRes && serviceRes.result) {
-        debugger
         this.users = serviceRes?.result;
         serviceRes.result.forEach((u: any, index: number) => {
-          u['index'] = index ? index : 1;
+          u['index'] = index ? index + 1 : 1;
           u['expanded'] = false;
         })
+        this.blockUI.stop();
         this.dataSource.data = serviceRes.result.filter((x: any) => x.assignedSkills.length > 0);
       }
+    }, () => {
+      this.blockUI.stop();
     })
   }
 
@@ -124,65 +128,126 @@ export class AssignSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     return ratingCard;
   }
 
+  skillAlreadyAssigned = (skillRef: any) => {
+    const user = this.users.find(x => x._id === skillRef?.resource);
+    if (user && user?.assignedSkills?.length > 0) {
+      const t = user.assignedSkills.some((x: any) => x.skill._id === skillRef?.skill);
+      return t;
+    }
+    return false;
+  }
+
   onAssign = () => {
-    this.blockUI.start('Saving......');
+    this.blockUI.start('');
     if (this.skillAssignFormGroup.valid) {
       const assignedSkill = this.skillAssignFormGroup.value;
 
-      const assignedSkillPayload = {
-        skill: assignedSkill.skill,
-        user: assignedSkill.resource,
-        rating: assignedSkill.rating,
-        ratingCard: this.getRatingCard(+assignedSkill?.rating),
-        comments: assignedSkill.comments,
-      }
+      if (this.skillAlreadyAssigned(assignedSkill) && !this.isUpdate) {
+        this.toastrService.error('Selected skill is already being assigned.', 'Error');
+        this.blockUI.stop();
+      } else {
+        if (this.isUpdate) {
+          const tempPayload: any = JSON.parse(JSON.stringify(this.existingPayload));
+          tempPayload.skill = assignedSkill.skill;
+          tempPayload.user = assignedSkill.resource;
+          tempPayload.rating = assignedSkill.rating;
+          tempPayload.ratingCard = this.getRatingCard(+assignedSkill?.rating);
+          tempPayload.comments = assignedSkill.comments;
 
-      this.skillAssessmentService.saveAssignedSkill(assignedSkillPayload).subscribe(savedResult => {
-        if (savedResult) {
-          savedResult['assignedSkill'] = this.skillAssignFormGroup.value;
-          this.fetchUsers();
+          this.skillAssessmentService.updateAssignedSkill(tempPayload).subscribe(updatedResult => {
+            if (updatedResult) {
+              this.existingPayload = {};
+              this.clearFields();
+              this.isUpdate = false;
+              this.toastrService.success('Successfully Updated.', 'Success');
+              this.fetchUsers();
+            }
+            this.blockUI.stop();
+          }, (e) => {
+            console.log(e);
+            this.blockUI.stop();
+          })
+
+        } else {
+          const assignedSkillPayload = {
+            skill: assignedSkill.skill,
+            user: assignedSkill.resource,
+            rating: assignedSkill.rating,
+            ratingCard: this.getRatingCard(+assignedSkill?.rating),
+            comments: assignedSkill.comments,
+          }
+
+          this.skillAssessmentService.saveAssignedSkill(assignedSkillPayload).subscribe(savedResult => {
+            if (savedResult) {
+              savedResult['assignedSkill'] = this.skillAssignFormGroup.value;
+              this.clearFields();
+              this.toastrService.success('Successfully Saved.', 'Success');
+              this.fetchUsers();
+            }
+            this.blockUI.stop();
+          }, () => {
+            this.blockUI.stop();
+          });
         }
-        this.blockUI.stop();
-      }, error => {
-        this.blockUI.stop();
-      });
+      }
     } else {
       this.blockUI.stop();
       console.log(this.skillAssignFormGroup.errors);
     }
   }
 
+  onResourceChange = () => {
+    if (this.isUpdate) {
+      this.existingPayload = {};
+      this.isUpdate = false;
+    }
+  }
+
+  clearFields = () => {
+    this.skillAssignFormGroup.reset({});
+    this.currentRating = 0;
+  }
+
   editAssignedSkill = (assignedSkill: any) => {
-    // edit implementation
+    this.existingPayload = assignedSkill;
+
+    const patchedValue = {
+      resource: assignedSkill?.user,
+      skill: assignedSkill?.skill?._id,
+      rating: assignedSkill?.rating,
+      comments: assignedSkill?.comments,
+    }
+    this.currentRating = assignedSkill?.rating;
+    this.skillAssignFormGroup.patchValue(patchedValue);
+    this.isUpdate = true;
   }
 
   deleteAssignedTask = (assignedSkill: any) => {
     this.blockUI.start('Deleting....');
     const appIds: string[] = [].concat(assignedSkill?._id);
     if (appIds && appIds.length > 0) {
-      this.proceedDelete(assignedSkill, appIds);
+      this.proceedDelete(assignedSkill?.user, appIds);
     } else {
       this.toastrService.error("Please select items to delete.", "Error");
       this.blockUI.stop();
     }
   }
 
-  proceedDelete = (assignedSkill: any, appIds: string[]) => {
+  proceedDelete = (userId: any, appIds: string[]) => {
     let form = new FormData();
-    debugger
     form.append("assignedSkillIds", JSON.stringify(appIds));
-    form.append("user", JSON.stringify(assignedSkill?.user?.userId));
+    form.append("userId", JSON.stringify(userId));
 
-    // this.skillAssessmentService.deleteAssignedSkill(form).subscribe((deletedResult: any) => {
-    //   if (deletedResult) {
-    //     this.toastrService.success('Successfully deleted.', 'Success');
-    //     this.skillAssessmentService.afterAssignmentDeletion.emit({ deleted: true, deletedId: appIds });
-    //   }
-    //   this.blockUI.stop();
-    // }, () => {
-    //   this.toastrService.error('Failed to delete', 'Error');
-    //   this.blockUI.stop();
-    // });
+    this.skillAssessmentService.deleteAssignedSkill(form).subscribe((deletedResult: any) => {
+      if (deletedResult) {
+        this.toastrService.success('Successfully deleted.', 'Success');
+        this.fetchUsers();
+      }
+      this.blockUI.stop();
+    }, () => {
+      this.toastrService.error('Failed to delete', 'Error');
+      this.blockUI.stop();
+    });
   }
 
   updatedRating = (event: any) => {
