@@ -1,31 +1,122 @@
-.outer-div {
-    height: 80%;
+.sub-table {
+    width: 100%;
+}
+
+.mat-column-index {
+    width: 16px;
+    // border-right: 1px solid currentColor;
+    padding-right: 24px;
+    border-top-width: 1px !important;
+    border-bottom-style: solid !important;
+}
+
+.mat-column-empty {
+    border-top-width: 1px !important;
+    border-bottom-style: solid !important;
+}
+
+.mat-column-name {
+    padding-left: 16px;
+    border-top-width: 1px !important;
+    border-bottom-style: solid !important;
+}
+
+.mat-column-user-email {
+    padding-left: 16px;
+    border-top-width: 1px !important;
+    border-bottom-style: solid !important;
+}
+
+.mat-column-designation {
+    padding-left: 16px;
+    border-top-width: 1px !important;
+    border-bottom-style: solid !important;
+}
+
+.mat-column-action {
+    padding-left: 16px;
+    border-top-width: 1px !important;
+    border-bottom-style: solid !important;
+}
+
+.mat-column-demo-weight {
+    font-style: italic;
+}
+
+.mat-column-demo-symbol {
+    width: 32px;
+    text-align: center;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+
+    tr {
+        td {
+            font-size: 15px !important;
+        }
+    }
+}
+
+tr.detail-row {
+    height: 0;
+}
+
+.add-border-top {
+    border-top-width: 1px;
+    border-bottom-style: solid;
+}
+.rm-border-bottom {
+    border-bottom: none !important;
+}
+
+// tr.example-element-row:not(.example-expanded-row):hover {
+//     background: #777;
+// }
+
+// tr.example-element-row:not(.example-expanded-row):active {
+//     background: #efefef;
+// }
+
+.example-element-row td {
+    border-bottom-width: 0;
+}
+
+.element-detail {
+    overflow: hidden;
     display: flex;
-    flex-direction: column;
+    width: 100%;
 }
 
-.button-bar {
-    margin-bottom: 1rem;
+.example-element-diagram {
+    min-width: 80px;
+    border: 2px solid black;
+    padding: 8px;
+    font-weight: lighter;
+    margin: 8px 0;
+    height: 104px;
 }
 
-.grid-wrapper {
-    flex: 1 1 auto;
+.example-element-symbol {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: normal;
 }
 
-.skill-allocation {
-    display: grid;
-    height: 80%;
-    grid-template-columns: 75% 25%;
-    grid-template-rows: auto;
-    grid-gap: 1rem;
+.example-element-description {
+    padding: 16px;
+}
 
-    &__grid-layout {
-        grid-column: 1/2;
-        grid-row: 1/-1;
-    }
+.example-element-description-attribution {
+    opacity: 0.5;
+}
 
-    &__form-layout {
-        grid-column: 2/-1;
-        grid-row: 1/-1;
-    }
+.inner-table {
+    width: 100%;
+}
+
+.inner-table mat-form-field {
+    margin-top: 15px;
+    width: 100%;
 }

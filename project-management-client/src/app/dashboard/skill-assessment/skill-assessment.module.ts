@@ -22,6 +22,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { TableModule } from 'ngx-easy-table';
 
@@ -89,7 +91,9 @@ import { AssignSkillFormComponent } from './assign-skills/assign-skill-form/assi
     NgSelectModule,
     MatAutocompleteModule,
     MatTableModule,
-    TableModule
+    TableModule,
+    MatSortModule,
+    MatPaginatorModule
   ]
 })
 
